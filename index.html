@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Safety Equipamentos - Sistema Interno</title>
+<style>
+:root{
+  --navy:#1b2f5e; --gold:#c9a227; --bg:#f4f6fa; --card:#fff; --text:#1c2333; --muted:#6b7280; --line:#e2e6ee;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+header{background:var(--navy);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;
+  padding-top:calc(14px + env(safe-area-inset-top,0px))}
+header .bar{height:6px;background:var(--gold);position:absolute;left:0;right:0;top:0}
+header h1{font-size:16px;margin:0}
+nav{display:flex;gap:4px;overflow-x:auto;background:#fff;border-bottom:2px solid var(--gold);padding:0 8px}
+nav button{background:none;border:none;padding:12px 10px;font-size:13px;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+nav button.active{color:var(--navy);font-weight:bold;border-color:var(--navy)}
+main{padding:14px;max-width:900px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 10px;color:var(--navy)}
+label{font-size:12px;color:var(--muted);display:block;margin-top:8px}
+input,select{width:100%;padding:8px;border:1px solid var(--line);border-radius:6px;font-size:14px;margin-top:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>div{flex:1;min-width:120px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:normal;font-size:11px;text-transform:uppercase}
+tr:hover{background:#f9fafc;cursor:pointer}
+.btn{background:var(--navy);color:#fff;border:none;padding:9px 14px;border-radius:6px;font-size:13px;cursor:pointer;margin-top:10px}
+.btn.gold{background:var(--gold);color:var(--navy);font-weight:bold}
+.btn.ghost{background:none;color:var(--navy);border:1px solid var(--navy)}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;background:#eef1f8;color:var(--navy)}
+.hint{font-size:11px;color:var(--muted);margin-top:4px}
+#login{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:50}
+#login .box{background:#fff;padding:26px;border-radius:10px;width:280px;text-align:center}
+#login .box h2{color:var(--navy);margin-top:0}
+.chk{display:flex;align-items:center;gap:6px;font-size:13px;margin-top:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.section-title{font-size:11px;text-transform:uppercase;color:var(--gold);font-weight:bold;margin:12px 0 4px}
+.printArea{display:none}
+@media print{
+  body *{visibility:hidden}
+  #printArea,#printArea *{visibility:visible}
+  #printArea{display:block;position:absolute;top:0;left:0;width:100%}
+}
+.doc{border:1px solid var(--line);padding:0;font-size:12px}
+.doc .top{background:var(--navy);color:#fff;padding:14px;position:relative}
+.doc .top .goldbar{position:absolute;bottom:0;left:0;right:0;height:5px;background:var(--gold)}
+.doc .body{padding:16px}
+.doc table{margin-top:10px}
+.sig{margin-top:50px;text-align:center}
+.sig .line{border-top:1px solid #333;width:220px;margin:0 auto 4px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div id="login">
+  <div class="box">
+    <h2>Safety Equipamentos</h2>
+    <p class="hint">Acesso restrito - usuário autorizado</p>
+    <div id="telaLogin">
+     <label>E-mail</label><input id="u" placeholder="seu@email.com">
+     <label>Senha</label><input id="p" type="password" placeholder="senha">
+     <button class="btn gold" style="width:100%" onclick="fazerLogin()">Entrar</button>
+     <p class="hint" id="msgLogin"></p>
+     <p class="hint" style="cursor:pointer;text-decoration:underline" onclick="document.getElementById('telaLogin').style.display='none';document.getElementById('telaRecuperar').style.display='block'">Esqueci minha senha</p>
+    </div>
+    <div id="telaRecuperar" style="display:none">
+     <label>Informe seu e-mail cadastrado</label><input id="eRecuperar" placeholder="seu@email.com">
+     <button class="btn gold" style="width:100%" onclick="enviarRecuperacao()">Enviar link de recuperação</button>
+     <p class="hint" id="msgRecuperar"></p>
+     <p class="hint" style="cursor:pointer;text-decoration:underline" onclick="document.getElementById('telaRecuperar').style.display='none';document.getElementById('telaLogin').style.display='block'">Voltar ao login</p>
+    </div>
+  </div>
+</div>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyAzl2N0aDNdcDSCs8R9WnA-9IYcyfkqde0", authDomain:"safety-equipamentos.firebaseapp.com",
+  projectId:"safety-equipamentos", storageBucket:"safety-equipamentos.firebasestorage.app",
+  messagingSenderId:"504587541694", appId:"1:504587541694:web:1812febffa6e00cff892ef"
+});
+const auth=firebase.auth(), db=firebase.firestore();
+let currentUser=null;
+function fazerLogin(){
+  const email=document.getElementById('u').value.trim(), senha=document.getElementById('p').value;
+  const msg=document.getElementById('msgLogin'); msg.textContent='Entrando...';
+  auth.signInWithEmailAndPassword(email,senha).then(async cred=>{
+    const doc=await db.collection('usuarios').doc(cred.user.uid).get();
+    if(!doc.exists){msg.textContent='Login sem cadastro de permissões. Peça ao master pra te registrar na aba Usuários.';auth.signOut();return}
+    const d=doc.data();
+    if(d.ativo===false){msg.textContent='Acesso desativado. Fale com o administrador.';auth.signOut();return}
+    currentUser={uid:cred.user.uid,email:cred.user.email,nome:d.nome||cred.user.email,role:d.role||'comum'};
+    document.getElementById('login').style.display='none'; renderNav(); render();
+  }).catch(()=>{msg.textContent='E-mail ou senha inválidos.'});
+}
+function enviarRecuperacao(){
+  const email=document.getElementById('eRecuperar').value.trim(); const msg=document.getElementById('msgRecuperar');
+  if(!email){msg.textContent='Informe um e-mail.';return}
+  auth.sendPasswordResetEmail(email).finally(()=>{msg.textContent='Se este e-mail estiver cadastrado, um link de redefinição foi enviado.'});
+}
+function sair(){currentUser=null;auth.signOut();document.getElementById('login').style.display='flex';document.getElementById('u').value='';document.getElementById('p').value='';}
+</script>
+
+<div class="bar" style="height:6px;background:var(--gold)"></div>
+<header><h1>SAFETY EQUIPAMENTOS · Sistema Interno</h1>
+ <span id="userTag" class="hint" style="color:#fff;margin-left:10px"></span>
+ <select id="anoSel" style="width:auto;margin:0 0 0 auto;background:#fff" onchange="anoAtual=parseInt(this.value);render()">
+  <option value="2026">Ano 2026</option><option value="2027">Ano 2027</option><option value="2028">Ano 2028</option>
+ </select>
+ <button class="btn ghost" style="margin:0 0 0 8px;background:#fff" onclick="sair()">Sair</button>
+</header>
+<nav id="nav"></nav>
+<main id="main"></main>
+
+<div id="printArea" class="printArea"></div>
+
+<script>
+// ---------- dados de exemplo ----------
+const funcionarios=[
+ {id:'F001',nome:'JADIEL GOMES PIRES',funcao:'ESCALADOR N3',cpf:'111.111.111-11',pix:'111.111.111-11',banco:'Nubank',tel:'21999990001',endereco:'Rua A, 10, RJ'},
+ {id:'F002',nome:'ALEXANDRE SANTOS SILVA',funcao:'AUXILIAR TECNICO',cpf:'222.222.222-22',pix:'21999990002',banco:'Bradesco',tel:'21999990002',endereco:'Rua B, 20, RJ'},
+ {id:'F003',nome:'CLAUDIO LUIZ DE LIMA FERREIRA',funcao:'ESCALADOR N1',cpf:'333.333.333-33',pix:'333.333.333-33',banco:'Caixa',tel:'21999990003',endereco:'Rua C, 30, RJ'},
+];
+const obras=[
+ {id:'O001',nome:'KLACON 01',endereco:'Rua das Laranjeiras, RJ',cnpj:'22.015.773/0001-84',segmento:'Civil',cno:'12345.67890/12',enderecoObra:'Rua das Laranjeiras, 500, RJ',
+  descricaoServico:'Manutenção de fachada por acesso por cordas',numOS:'OS-2026-014',numContrato:'CT-2026-014',tipo:'Fechada',valor:10075,
+  responsaveis:[{nome:'JESUEL DE OLIVEIRA',funcao:'Engenheiro',tel:'21986126756',email:'jesuel@klacon.com.br'}],pagamentos:[]},
+ {id:'O002',nome:'BOULEVARD 01',endereco:'Av. Boulevard, RJ',cnpj:'22.562.584/0001-57',segmento:'Civil',cno:'98765.43210/34',enderecoObra:'Av. Boulevard, 900, RJ',
+  descricaoServico:'Pintura de fachada',numOS:'OS-2026-021',numContrato:'CT-2026-021',tipo:'Fechada',valor:39400,
+  responsaveis:[{nome:'LUIZ',funcao:'Síndico',tel:'',email:''},{nome:'CAIO PEREIRA',funcao:'Zelador',tel:'',email:''}],pagamentos:[{data:'2026-04-10',valor:20000}]},
+ {id:'O003',nome:'HOTEL MARINE 01',endereco:'Marina da Glória, RJ',cnpj:'',segmento:'Maritimo',embarcacao:'ÁGUAS CLARAS',imo:'IMO 9123456',localizacaoAtual:'Porto do Rio de Janeiro',
+  historicoLocalizacao:[{data:'2026-08-13',local:'Porto do Rio de Janeiro'}],descricaoServico:'Manutenção de casco por acesso por cordas',numOS:'OS-2026-030',numContrato:'CT-2026-030',
+  tipo:'Atendimento',valor:null,responsaveis:[{nome:'JORGE',funcao:'Gerente de Manutenção',tel:'21979628132',email:'jorge.rocha@csmarinaleblon.com.br'}]},
+ {id:'O004',nome:'ADMINISTRATIVO',endereco:'',cnpj:'',segmento:'',tipo:'Administrativo',valor:null,responsaveis:[]},
+];
+let lancamentos=[
+ {data:'2026-09-05',obra:'O003',modo:'individual',colabs:['F001'],alim:{cafe:8,almoco:22,lanche:0,janta:0},log:{passagem:30,combustivel:0,estac:0,hosp:0},diaria:{'F001':400}},
+ {data:'2026-09-19',obra:'O003',modo:'individual',colabs:['F001'],alim:{cafe:8,almoco:22,lanche:0,janta:0},log:{passagem:30,combustivel:0,estac:0,hosp:0},diaria:{'F001':400}},
+];
+let atendimentos=[
+ {obra:'O003',inicio:'2026-09-05',fim:'2026-09-07',desc:'Manutenção urgente de rede'},
+ {obra:'O003',inicio:'2026-09-19',fim:'2026-09-20',desc:'Retorno solicitado pelo cliente'},
+];
+let gastosIndiretos=[
+ {data:'2026-09-03',categoria:'Obra Direto (Material)',desc:'Cabo de aço e conectores',obra:'O001',valorTotal:607.95,pagamentos:[{data:'2026-09-03',valor:607.95}]},
+ {data:'2026-09-10',categoria:'Impostos/Encargos',desc:'Nota fiscal do serviço',obra:'O001',valorTotal:1107.70,pagamentos:[{data:'2026-09-10',valor:1107.70}]},
+ {data:'2026-09-12',categoria:'RH/Pessoal (Curso/Treinamento/ASO)',desc:'ASO e exames NR',obra:'O002',valorTotal:4181.00,pagamentos:[{data:'2026-09-12',valor:2000}]},
+];
+const categoriasGasto=['Obra Direto (Material)','Obra Direto (Visita Técnica)','Impostos/Encargos','RH/Pessoal (Curso/Treinamento/ASO)','Fixo/Adm'];
+let faturamentos=[
+ {obra:'O003',data:'2026-09-05',valor:2000},
+ {obra:'O003',data:'2026-09-19',valor:3000},
+];
+let anoAtual=2026;
+function statusGasto(g){
+  const pago=g.pagamentos.reduce((s,p)=>s+p.valor,0);
+  if(pago<=0)return {label:'PENDENTE',pago,saldo:g.valorTotal};
+  if(pago>=g.valorTotal)return {label:'PAGO TOTAL',pago,saldo:0};
+  return {label:'PAGO PARCIAL',pago,saldo:g.valorTotal-pago};
+}
+function registrarPagamentoGasto(i){
+  const v=parseFloat(prompt('Valor da parcela paga agora:')); if(!v)return;
+  gastosIndiretos[i].pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v});
+  render();
+}
+function registrarPagamentoObra(id){
+  const v=parseFloat(prompt('Valor recebido nesta medição:')); if(!v)return;
+  const o=obras.find(x=>x.id===id); o.pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v});
+  render();
+}
+
+const tabsBase=['Funcionários','Obras','Lançamentos','Atendimentos','Gastos Indiretos','Recibos','Dashboard'];
+let active='Funcionários';
+function tabsVisiveis(){return currentUser&&currentUser.role==='master'?[...tabsBase,'Usuários']:tabsBase}
+function nomeF(id){return funcionarios.find(f=>f.id===id)?.nome||id}
+function nomeO(id){return obras.find(o=>o.id===id)?.nome||id}
+
+function renderNav(){
+  document.getElementById('nav').innerHTML=tabsVisiveis().map(t=>
+   `<button class="${t===active?'active':''}" onclick="setTab('${t}')">${t}</button>`).join('');
+  if(currentUser)document.getElementById('userTag').textContent=`${currentUser.nome} (${currentUser.role})`;
+}
+function setTab(t){active=t;renderNav();render()}
+
+function render(){
+  const m=document.getElementById('main');
+  if(active==='Funcionários') m.innerHTML=viewFuncionarios();
+  if(active==='Obras') m.innerHTML=viewObras();
+  if(active==='Lançamentos') m.innerHTML=viewLancamentos();
+  if(active==='Atendimentos') m.innerHTML=viewAtendimentos();
+  if(active==='Gastos Indiretos') m.innerHTML=viewGastos();
+  if(active==='Recibos') m.innerHTML=viewRecibos();
+  if(active==='Dashboard') m.innerHTML=viewDashboard();
+  if(active==='Usuários') m.innerHTML=viewUsuarios();
+}
+
+// ---------- Funcionários ----------
+let editandoFId=null;
+function viewFuncionarios(){
+  return `<div class="card">
+    <h2>Buscar funcionário</h2>
+    <input placeholder="Nome, CPF ou ID" oninput="filtroF(this.value)">
+    <table><thead><tr><th>ID</th><th>Nome</th><th>CPF</th><th>Função</th><th></th></tr></thead>
+    <tbody id="tbF"></tbody></table>
+    <button class="btn ghost" onclick="novoFuncionario()">+ Novo colaborador</button>
+    <div id="formNovoF" style="display:none;margin-top:10px">
+     <div class="row"><div><label>Nome</label><input id="nfNome"></div>
+     <div><label>Função</label><input id="nfFuncao"></div></div>
+     <div class="row"><div><label>CPF</label><input id="nfCpf" placeholder="000.000.000-00"></div>
+     <div><label>PIX</label><input id="nfPix"></div></div>
+     <div class="row"><div><label>Banco</label><input id="nfBanco"></div>
+     <div><label>Telefone</label><input id="nfTel"></div></div>
+     <div class="row"><div><label>Endereço</label><input id="nfEndereco"></div></div>
+     <button class="btn gold" onclick="salvarFuncionario()">Salvar colaborador</button>
+    </div>
+  </div>
+  <div id="relF"></div>`;
+}
+function toggleNovoF(){const d=document.getElementById('formNovoF');d.style.display=d.style.display==='none'?'block':'none'}
+function novoFuncionario(){
+  editandoFId=null;
+  ['nfNome','nfFuncao','nfCpf','nfPix','nfBanco','nfTel','nfEndereco'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('formNovoF').style.display='block';
+}
+function editarFuncionario(id){
+  editandoFId=id; const f=funcionarios.find(x=>x.id===id);
+  document.getElementById('formNovoF').style.display='block';
+  nfNome.value=f.nome; nfFuncao.value=f.funcao; nfCpf.value=f.cpf; nfPix.value=f.pix||''; nfBanco.value=f.banco||''; nfTel.value=f.tel||''; nfEndereco.value=f.endereco||'';
+}
+function salvarFuncionario(){
+  const nome=nfNome.value.trim(); if(!nome){return}
+  const dados={nome,funcao:nfFuncao.value||'-',cpf:nfCpf.value||'-',pix:nfPix.value||'',banco:nfBanco.value||'',tel:nfTel.value||'',endereco:nfEndereco.value||''};
+  if(editandoFId){ Object.assign(funcionarios.find(x=>x.id===editandoFId),dados); editandoFId=null; }
+  else { dados.id='F'+String(funcionarios.length+1).padStart(3,'0'); funcionarios.push(dados); }
+  document.getElementById('formNovoF').style.display='none';
+  render(); filtroF('');
+}
+function filtroF(q){
+  q=q.toLowerCase();
+  const list=funcionarios.filter(f=>f.nome.toLowerCase().includes(q)||f.cpf.includes(q)||f.id.toLowerCase().includes(q));
+  document.getElementById('tbF').innerHTML=list.map(f=>
+   `<tr><td onclick="abrirF('${f.id}')" style="cursor:pointer">${f.id}</td><td onclick="abrirF('${f.id}')" style="cursor:pointer">${f.nome}</td><td>${f.cpf}</td><td>${f.funcao}</td><td><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="editarFuncionario('${f.id}')">editar</button></td></tr>`).join('');
+}
+setTimeout(()=>filtroF(''),0);
+function totaisPorFuncionario(fid){
+  let tot={cafe:0,almoco:0,lanche:0,janta:0,passagem:0,combustivel:0,estac:0,hosp:0,diaria:0};
+  lancamentos.forEach(l=>{
+    if(l.colabs.includes(fid)){
+      const n=l.colabs.length;
+      tot.cafe+=l.alim.cafe/n; tot.almoco+=l.alim.almoco/n; tot.lanche+=l.alim.lanche/n; tot.janta+=l.alim.janta/n;
+      tot.passagem+=l.log.passagem/n; tot.combustivel+=l.log.combustivel/n; tot.estac+=l.log.estac/n; tot.hosp+=l.log.hosp/n;
+      tot.diaria+=(l.diaria[fid]||0);
+    }
+  });
+  return tot;
+}
+function abrirF(fid){
+  const f=funcionarios.find(x=>x.id===fid);
+  const t=totaisPorFuncionario(fid);
+  const total=Object.values(t).reduce((a,b)=>a+b,0);
+  document.getElementById('relF').innerHTML=`
+   <div class="card">
+    <h2>${f.nome} <span class="tag">${f.id}</span></h2>
+    <div class="row"><div><label>Relatório</label>
+      <select id="periodoF"><option>Mensal - Setembro/2026</option><option>Anual - 2026</option></select>
+    </div></div>
+    <div class="section-title">Totais no período</div>
+    <table><tr><td>Alimentação</td><td>R$ ${(t.cafe+t.almoco+t.lanche+t.janta).toFixed(2)}</td></tr>
+    <tr><td>Logística</td><td>R$ ${(t.passagem+t.combustivel+t.estac+t.hosp).toFixed(2)}</td></tr>
+    <tr><td>Diária</td><td>R$ ${t.diaria.toFixed(2)}</td></tr>
+    <tr><td><b>Total</b></td><td><b>R$ ${total.toFixed(2)}</b></td></tr></table>
+    <button class="btn" onclick="gerarRecibo('${fid}',['diaria','alim','log'])">Gerar recibo (PDF)</button>
+   </div>`;
+}
+
+// ---------- Obras ----------
+let editandoObraId=null;
+function viewObras(){
+  return `<div class="card">
+   <h2>Buscar obra / cliente</h2>
+   <input placeholder="Nome, CNPJ, CNO, IMO, embarcação, OS ou contrato" oninput="filtroO(this.value)">
+   <table><thead><tr><th>ID</th><th>Nome</th><th>Segmento</th><th>OS / Contrato</th><th>Responsáveis</th><th></th></tr></thead>
+   <tbody id="tbO"></tbody></table>
+   <button class="btn ghost" onclick="novaObra()">+ Nova obra / cliente</button>
+   <div id="formNovoO" style="display:none;margin-top:10px">
+    <div class="row"><div><label>Nome</label><input id="noNome"></div>
+    <div><label>Tipo de contrato</label><select id="noTipo"><option value="Fechada">Obra (valor fechado)</option><option value="Atendimento">Cliente por atendimento</option></select></div></div>
+    <div class="row"><div><label>Segmento</label><select id="noSeg" onchange="toggleSegForm()"><option value="Civil">Civil</option><option value="Industrial">Industrial</option><option value="Maritimo">Marítimo</option></select></div>
+    <div><label>Valor da obra (se fechada)</label><input id="noValor" type="number"></div></div>
+    <div class="section-title">Dados comuns</div>
+    <div class="row"><div><label>Endereço</label><input id="noEndereco"></div><div><label>CNPJ</label><input id="noCnpj"></div></div>
+    <div class="row"><div><label>Descrição do serviço</label><input id="noDesc"></div></div>
+    <div class="row"><div><label>Número da Ordem de Serviço</label><input id="noOS"></div><div><label>Número do contrato</label><input id="noContrato"></div></div>
+    <div id="segCivil"><div class="section-title">Civil</div><div class="row"><div><label>CNO</label><input id="noCno"></div><div><label>Endereço da obra</label><input id="noEnderecoObra"></div></div></div>
+    <div id="segInd" style="display:none"><div class="section-title">Industrial</div><div class="row"><div><label>Endereço do serviço</label><input id="noEnderecoObraInd"></div></div></div>
+    <div id="segMar" style="display:none"><div class="section-title">Marítimo</div><div class="row"><div><label>Embarcação</label><input id="noEmbarcacao"></div>
+    <div><label>IMO</label><input id="noImo" placeholder="ex: IMO 9123456"></div></div>
+    <div class="row"><div><label>Local da embarcação</label><input id="noLocal" placeholder="Estaleiro / Fundeio / Porto - qual"></div></div></div>
+    <div class="section-title">Responsáveis (pode adicionar mais de um)</div>
+    <div id="respRows"></div>
+    <button type="button" class="btn ghost" onclick="addRespRow()">+ adicionar responsável</button>
+    <button class="btn gold" onclick="salvarObra()">Salvar obra / cliente</button>
+   </div>
+  </div><div id="painelLocal"></div>`;
+}
+function toggleSegForm(){
+  const v=noSeg.value;
+  document.getElementById('segCivil').style.display=v==='Civil'?'block':'none';
+  document.getElementById('segInd').style.display=v==='Industrial'?'block':'none';
+  document.getElementById('segMar').style.display=v==='Maritimo'?'block':'none';
+}
+function addRespRow(r){
+  const d=document.createElement('div'); d.className='row respRow';
+  d.innerHTML=`<div><label>Nome</label><input class="rNome" value="${r?.nome||''}"></div><div><label>Função</label><input class="rFuncao" value="${r?.funcao||''}"></div>
+   <div><label>Telefone</label><input class="rTel" value="${r?.tel||''}"></div><div><label>E-mail</label><input class="rEmail" value="${r?.email||''}"></div>`;
+  document.getElementById('respRows').appendChild(d);
+}
+function toggleNovoO(){const d=document.getElementById('formNovoO');d.style.display=d.style.display==='none'?'block':'none';if(!document.getElementById('respRows').children.length)addRespRow();}
+function novaObra(){
+  editandoObraId=null;
+  ['noNome','noValor','noEndereco','noCnpj','noDesc','noOS','noContrato','noCno','noEnderecoObra','noEnderecoObraInd','noEmbarcacao','noImo','noLocal'].forEach(id=>document.getElementById(id).value='');
+  noTipo.value='Fechada'; noSeg.value='Civil'; toggleSegForm();
+  document.getElementById('respRows').innerHTML=''; addRespRow();
+  document.getElementById('formNovoO').style.display='block';
+}
+function editarObra(id){
+  editandoObraId=id; const o=obras.find(x=>x.id===id);
+  document.getElementById('formNovoO').style.display='block';
+  noNome.value=o.nome; noTipo.value=o.tipo; noSeg.value=o.segmento||'Civil'; noValor.value=o.valor||'';
+  noEndereco.value=o.endereco||''; noCnpj.value=o.cnpj||''; noDesc.value=o.descricaoServico||'';
+  noOS.value=o.numOS||''; noContrato.value=o.numContrato||'';
+  noCno.value=o.cno||''; noEnderecoObra.value=o.enderecoObra||''; noEnderecoObraInd.value=o.enderecoObra||'';
+  noEmbarcacao.value=o.embarcacao||''; noImo.value=o.imo||''; noLocal.value=o.localizacaoAtual||'';
+  toggleSegForm();
+  document.getElementById('respRows').innerHTML='';
+  (o.responsaveis&&o.responsaveis.length?o.responsaveis:[{}]).forEach(addRespRow);
+}
+function salvarObra(){
+  const nome=noNome.value.trim(); if(!nome){return}
+  const responsaveis=[...document.querySelectorAll('.respRow')].map(r=>({
+   nome:r.querySelector('.rNome').value, funcao:r.querySelector('.rFuncao').value,
+   tel:r.querySelector('.rTel').value, email:r.querySelector('.rEmail').value})).filter(r=>r.nome);
+  const base={nome,endereco:noEndereco.value||'',cnpj:noCnpj.value||'',segmento:noSeg.value,
+   descricaoServico:noDesc.value||'',numOS:noOS.value||'',numContrato:noContrato.value||'',
+   responsaveis,tipo:noTipo.value,valor:noTipo.value==='Fechada'?num(noValor.value):null};
+  if(noSeg.value==='Civil') Object.assign(base,{cno:noCno.value||'',enderecoObra:noEnderecoObra.value||''});
+  if(noSeg.value==='Industrial') Object.assign(base,{enderecoObra:noEnderecoObraInd.value||''});
+  if(noSeg.value==='Maritimo') Object.assign(base,{embarcacao:noEmbarcacao.value||'',imo:noImo.value||'',localizacaoAtual:noLocal.value||''});
+  if(editandoObraId){
+    const o=obras.find(x=>x.id===editandoObraId);
+    if(noSeg.value==='Maritimo'&&!o.historicoLocalizacao)base.historicoLocalizacao=noLocal.value?[{data:new Date().toISOString().slice(0,10),local:noLocal.value}]:[];
+    else if(noSeg.value==='Maritimo')base.historicoLocalizacao=o.historicoLocalizacao;
+    Object.assign(o,base); editandoObraId=null;
+  } else {
+    base.id='O'+String(obras.length+1).padStart(3,'0'); base.pagamentos=[];
+    if(noSeg.value==='Maritimo')base.historicoLocalizacao=noLocal.value?[{data:new Date().toISOString().slice(0,10),local:noLocal.value}]:[];
+    obras.push(base);
+  }
+  toggleNovoO(); render(); filtroO('');
+}
+function atualizarLocalizacao(id){
+  const novo=prompt('Nova localização (porto, estaleiro ou área de fundeio):'); if(!novo)return;
+  const o=obras.find(x=>x.id===id);
+  o.localizacaoAtual=novo; o.historicoLocalizacao.push({data:new Date().toISOString().slice(0,10),local:novo});
+  render();
+}
+function verHistoricoLocal(id){
+  const o=obras.find(x=>x.id===id);
+  document.getElementById('painelLocal').innerHTML=`<div class="card"><h2>${o.nome} — histórico de localização</h2>
+   <table><thead><tr><th>Data</th><th>Local</th></tr></thead>
+   <tbody>${o.historicoLocalizacao.map(h=>`<tr><td>${h.data}</td><td>${h.local}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function filtroO(q){
+  q=q.toLowerCase();
+  const list=obras.filter(o=>[o.nome,o.cnpj,o.cno,o.imo,o.embarcacao,o.numOS,o.numContrato,o.id,...(o.responsaveis||[]).map(r=>r.nome)].join(' ').toLowerCase().includes(q));
+  document.getElementById('tbO').innerHTML=list.map(o=>{
+   const resp=(o.responsaveis||[]).map(r=>`${r.nome}${r.funcao?' ('+r.funcao+')':''}`).join('; ')||'-';
+   let seg=o.segmento==='Maritimo'?'Marítimo':(o.segmento||o.tipo);
+   let osct=`${o.numOS||'-'}<br>${o.numContrato||''}`;
+   if(o.segmento==='Maritimo') osct+=`<br><span class="hint">${o.embarcacao||''} · ${o.imo||''} · ${o.localizacaoAtual||''}</span> <button class="btn ghost" style="margin:2px 2px 0;padding:3px 8px" onclick="event.stopPropagation();atualizarLocalizacao('${o.id}')">atualizar local</button><button class="btn ghost" style="margin:2px 0 0;padding:3px 8px" onclick="event.stopPropagation();verHistoricoLocal('${o.id}')">histórico</button>`;
+   if(o.tipo==='Fechada'){const pago=(o.pagamentos||[]).reduce((s,p)=>s+p.valor,0);
+    osct+=`<br><span class="hint">Recebido R$ ${pago.toFixed(2)} / Saldo R$ ${(o.valor-pago).toFixed(2)}</span> <button class="btn ghost" style="margin:2px 0 0;padding:3px 8px" onclick="event.stopPropagation();registrarPagamentoObra('${o.id}')">+ medição</button>`;}
+   return `<tr><td>${o.id}</td><td onclick="editarObra('${o.id}')" style="cursor:pointer">${o.nome}</td><td><span class="tag">${seg}</span></td><td>${osct}</td><td>${resp}</td><td><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="editarObra('${o.id}')">editar</button></td></tr>`}).join('');
+}
+setTimeout(()=>{if(active==='Obras')filtroO('')},0);
+
+// ---------- Lançamentos ----------
+function viewLancamentos(){
+  return `<div class="card">
+   <h2>Novo lançamento diário</h2>
+   <div class="row"><div><label>Data</label><input type="date" id="lData" value="2026-09-27"></div>
+   <div><label>Obra/Cliente</label><select id="lObra">${obras.map(o=>`<option value="${o.id}">${o.nome}</option>`).join('')}</select></div></div>
+   <label>Modo</label>
+   <select id="lModo" onchange="toggleGrupo()"><option value="individual">Individual</option><option value="grupo">Compra em grupo (rateio automático)</option></select>
+   <div id="lColabs"></div>
+   <div class="section-title">Alimentação</div>
+   <div class="grid2">
+    <div><label>Café</label><input id="cafe" type="number" placeholder="deixe em branco se não houve"></div>
+    <div><label>Almoço</label><input id="almoco" type="number" placeholder="deixe em branco se não houve"></div>
+    <div><label>Lanche</label><input id="lanche" type="number" placeholder="deixe em branco se não houve"></div>
+    <div><label>Janta</label><input id="janta" type="number" placeholder="deixe em branco se não houve"></div>
+   </div>
+   <div class="section-title">Logística</div>
+   <div class="grid2">
+    <div><label>Passagem</label><input id="passagem" type="number" placeholder="deixe em branco se não houve"></div>
+    <div><label>Combustível</label><input id="combustivel" type="number" placeholder="deixe em branco se não houve"></div>
+    <div><label>Estacionamento</label><input id="estac" type="number" placeholder="deixe em branco se não houve"></div>
+    <div><label>Hospedagem</label><input id="hosp" type="number" placeholder="deixe em branco se não houve"></div>
+   </div>
+   <div class="section-title">Diária (sempre individual)</div>
+   <div id="lDiarias"></div>
+   <button class="btn gold" onclick="salvarLancamento()">Salvar lançamento</button>
+   <p class="hint" id="msgL"></p>
+  </div>
+  <div class="card"><h2>Lançamentos recentes</h2>
+   <table><thead><tr><th>Data</th><th>Obra</th><th>Colaboradores</th><th>Modo</th></tr></thead>
+   <tbody>${lancamentos.map(l=>`<tr><td>${l.data}</td><td>${nomeO(l.obra)}</td><td>${l.colabs.map(nomeF).join(', ')}</td><td>${l.modo}</td></tr>`).join('')}</tbody></table>
+  </div>`;
+}
+function toggleGrupo(){renderColabs()}
+function renderColabs(){
+  document.getElementById('lColabs').innerHTML=`<label>Colaboradores presentes</label>`+
+   funcionarios.map(f=>`<div class="chk"><input type="checkbox" value="${f.id}" class="cColab" onchange="renderDiarias()">${f.nome}</div>`).join('');
+}
+function renderDiarias(){
+  const ids=[...document.querySelectorAll('.cColab:checked')].map(c=>c.value);
+  document.getElementById('lDiarias').innerHTML=ids.map(id=>
+   `<div><label>${nomeF(id)}</label><input type="number" class="dVal" data-id="${id}" placeholder="valor da diária"></div>`).join('')||'<p class="hint">Selecione colaboradores acima.</p>';
+}
+setTimeout(()=>{if(active==='Lançamentos'){renderColabs();renderDiarias();}},0);
+function num(v){return v===''||v===null||v===undefined?0:parseFloat(v)}
+function salvarLancamento(){
+  const ids=[...document.querySelectorAll('.cColab:checked')].map(c=>c.value);
+  if(!ids.length){document.getElementById('msgL').textContent='Selecione ao menos um colaborador.';return}
+  const diaria={};
+  document.querySelectorAll('.dVal').forEach(i=>diaria[i.dataset.id]=num(i.value));
+  lancamentos.push({
+   data:document.getElementById('lData').value, obra:document.getElementById('lObra').value,
+   modo:document.getElementById('lModo').value, colabs:ids,
+   alim:{cafe:num(cafe.value),almoco:num(almoco.value),lanche:num(lanche.value),janta:num(janta.value)},
+   log:{passagem:num(passagem.value),combustivel:num(combustivel.value),estac:num(estac.value),hosp:num(hosp.value)},
+   diaria
+  });
+  document.getElementById('msgL').textContent='Lançamento salvo. '+(document.getElementById('lModo').value==='grupo'?`Valores rateados entre ${ids.length} colaborador(es).`:'');
+  render();
+}
+
+// ---------- Atendimentos ----------
+function viewAtendimentos(){
+  const clientes=obras.filter(o=>o.tipo==='Atendimento');
+  return `<div class="card"><h2>Clientes por atendimento</h2>
+   <p class="hint">Sem valor fixo de obra — clique no cliente para lançar o valor faturado de cada dia de atendimento.</p>
+   <table><thead><tr><th>ID</th><th>Nome</th><th>Responsável</th></tr></thead>
+   <tbody>${clientes.map(c=>`<tr onclick="abrirAtendimento('${c.id}')"><td>${c.id}</td><td>${c.nome}</td><td>${(c.responsaveis[0]||{}).nome||'-'}</td></tr>`).join('')}</tbody></table>
+  </div><div id="painelAtend"></div>`;
+}
+function abrirAtendimento(oid){
+  const c=obras.find(o=>o.id===oid);
+  const lista=faturamentos.filter(f=>f.obra===oid && f.data.startsWith(String(anoAtual)));
+  const total=lista.reduce((s,f)=>s+f.valor,0);
+  document.getElementById('painelAtend').innerHTML=`<div class="card">
+   <h2>${c.nome} — lançar valor do dia</h2>
+   <div class="row"><div><label>Data</label><input type="date" id="fData" value="2026-09-27"></div>
+   <div><label>Valor faturado no dia</label><input type="number" id="fValor" placeholder="ex: 2000"></div></div>
+   <button class="btn gold" onclick="salvarFaturamento('${oid}')">Adicionar</button>
+   <table style="margin-top:10px"><thead><tr><th>Data</th><th>Valor</th></tr></thead>
+   <tbody>${lista.map(f=>`<tr><td>${f.data}</td><td>R$ ${f.valor.toFixed(2)}</td></tr>`).join('')}
+   <tr><td><b>TOTAL DO FECHAMENTO (${anoAtual})</b></td><td><b>R$ ${total.toFixed(2)}</b></td></tr></tbody></table>
+  </div>`;
+}
+function salvarFaturamento(oid){
+  const v=num(document.getElementById('fValor').value); if(!v)return;
+  faturamentos.push({obra:oid,data:document.getElementById('fData').value,valor:v});
+  abrirAtendimento(oid);
+}
+
+// ---------- Gastos Indiretos ----------
+function viewGastos(){
+  const listaAno=gastosIndiretos.map((g,i)=>({g,i})).filter(x=>x.g.data.startsWith(String(anoAtual)));
+  const total=listaAno.reduce((s,x)=>s+x.g.valorTotal,0);
+  return `<div class="card">
+   <h2>Gastos diretos/indiretos da obra</h2>
+   <p class="hint">Material, impostos, notas, visitas técnicas, cursos/treinamentos/ASO — entram no custo da obra ou do Administrativo, não no pagamento de colaborador. Pode ser atualizado a cada parcela paga.</p>
+   <div class="row"><div><label>Data</label><input type="date" id="gData" value="2026-09-27"></div>
+   <div><label>Categoria</label><select id="gCat">${categoriasGasto.map(c=>`<option>${c}</option>`).join('')}</select></div></div>
+   <div class="row"><div><label>Descrição</label><input id="gDesc"></div>
+   <div><label>Obra ou Administrativo</label><select id="gObra">${obras.map(o=>`<option value="${o.id}">${o.nome}</option>`).join('')}</select></div></div>
+   <div class="row"><div><label>Valor total</label><input id="gValor" type="number"></div></div>
+   <button class="btn gold" onclick="salvarGasto()">Salvar gasto</button>
+  </div>
+  <div class="card"><h2>Lançamentos de gastos — ${anoAtual}</h2>
+   <table><thead><tr><th>Data</th><th>Categoria</th><th>Descrição</th><th>Obra</th><th>Total</th><th>Pago</th><th>Saldo</th><th>Status</th><th></th></tr></thead>
+   <tbody>${listaAno.map(({g,i})=>{const s=statusGasto(g);return `<tr><td>${g.data}</td><td>${g.categoria}</td><td>${g.desc}</td><td>${nomeO(g.obra)}</td><td>R$ ${g.valorTotal.toFixed(2)}</td><td>R$ ${s.pago.toFixed(2)}</td><td>R$ ${s.saldo.toFixed(2)}</td><td><span class="tag">${s.label}</span></td><td><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="registrarPagamentoGasto(${i})">+ parcela</button></td></tr>`}).join('')}
+   <tr><td colspan="4"><b>TOTAL</b></td><td colspan="5"><b>R$ ${total.toFixed(2)}</b></td></tr></tbody></table>
+  </div>`;
+}
+function salvarGasto(){
+  const desc=gDesc.value.trim(); if(!desc){return}
+  gastosIndiretos.push({data:gData.value,categoria:gCat.value,desc,obra:gObra.value,valorTotal:num(gValor.value),pagamentos:[]});
+  render();
+}
+
+// ---------- Usuários (master) ----------
+function viewUsuarios(){
+  setTimeout(carregarUsuarios,0);
+  return `<div class="card"><h2>Usuários do sistema</h2>
+   <p class="hint">1) Crie o login em Firebase Console → Authentication → Add user (e-mail/senha). 2) Copie o UID gerado e registre aqui com o papel da pessoa.</p>
+   <div class="row"><div><label>UID (do Firebase Authentication)</label><input id="nuUid"></div>
+   <div><label>Nome</label><input id="nuNome"></div></div>
+   <div class="row"><div><label>Papel</label><select id="nuRole"><option value="comum">Comum</option><option value="master">Master</option></select></div></div>
+   <button class="btn gold" onclick="salvarUsuario()">Registrar usuário</button>
+  </div>
+  <div class="card"><h2>Usuários cadastrados</h2><table id="tbUsuarios"><tr><td>Carregando...</td></tr></table></div>`;
+}
+async function carregarUsuarios(){
+  const snap=await db.collection('usuarios').get();
+  const tb=document.getElementById('tbUsuarios'); if(!tb)return;
+  tb.innerHTML='<tr><th>ID</th><th>Nome</th><th>Papel</th><th>Status</th><th></th></tr>'+
+   snap.docs.map(d=>{const u=d.data();return `<tr><td>${d.id.slice(0,6)}</td><td>${u.nome}</td><td>${u.role}</td><td><span class="tag">${u.ativo===false?'DESATIVADO':'ATIVO'}</span></td><td><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="toggleUsuario('${d.id}',${u.ativo===false})">${u.ativo===false?'reativar':'desativar'}</button></td></tr>`}).join('');
+}
+function salvarUsuario(){
+  const uid=nuUid.value.trim(); if(!uid)return;
+  db.collection('usuarios').doc(uid).set({nome:nuNome.value||'-',role:nuRole.value,ativo:true}).then(carregarUsuarios);
+}
+function toggleUsuario(uid,ativar){
+  db.collection('usuarios').doc(uid).update({ativo:ativar}).then(carregarUsuarios);
+}
+
+// ---------- Recibos ----------
+function viewRecibos(){
+  return `<div class="card">
+   <h2>Gerar documentos</h2>
+   <div class="row"><div><label>Mês/Ano</label><input value="Setembro/2026"></div>
+   <div><label>Funcionário</label><select id="rFunc">${funcionarios.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div></div>
+   <label>Categorias no PDF</label>
+   <div class="chk"><input type="checkbox" id="cAlim" checked> Alimentação</div>
+   <div class="chk"><input type="checkbox" id="cLog" checked> Logística</div>
+   <div class="chk"><input type="checkbox" id="cDia" checked> Diária</div>
+   <button class="btn gold" onclick="gerarReciboUI()">Gerar recibo (1 por funcionário, com assinatura)</button>
+   <button class="btn ghost" onclick="gerarAuditoria()">Gerar PDF de auditoria (único, sem assinatura)</button>
+  </div>`;
+}
+function catsSelecionadas(){
+  const c=[]; if(cAlim.checked)c.push('alim'); if(cLog.checked)c.push('log'); if(cDia.checked)c.push('diaria');
+  return c;
+}
+function gerarReciboUI(){gerarRecibo(document.getElementById('rFunc').value,catsSelecionadas())}
+function gerarRecibo(fid,cats){
+  const f=funcionarios.find(x=>x.id===fid); const t=totaisPorFuncionario(fid);
+  let rows='';
+  if(cats.includes('alim'))rows+=`<tr><td>Alimentação (café/almoço/lanche/janta)</td><td>R$ ${(t.cafe+t.almoco+t.lanche+t.janta).toFixed(2)}</td></tr>`;
+  if(cats.includes('log'))rows+=`<tr><td>Logística (passagem/combustível/estac./hospedagem)</td><td>R$ ${(t.passagem+t.combustivel+t.estac+t.hosp).toFixed(2)}</td></tr>`;
+  if(cats.includes('diaria'))rows+=`<tr><td>Diária</td><td>R$ ${t.diaria.toFixed(2)}</td></tr>`;
+  document.getElementById('printArea').innerHTML=`<div class="doc">
+   <div class="top"><b>SAFETY EQUIPAMENTOS</b><br><span style="font-size:10px">CNPJ 22.015.773/0001-84 · Rua José de Queiroz, 196 - Bento Ribeiro - RJ</span><div class="goldbar"></div></div>
+   <div class="body"><h3>RECIBO DE PAGAMENTO</h3>
+   <p>Nome: ${f.nome}<br>CPF: ${f.cpf}<br>Função: ${f.funcao}<br>Período: Setembro/2026</p>
+   <table>${rows}</table>
+   <div class="sig"><div class="line"></div>${f.nome}</div>
+   <p class="hint" style="margin-top:20px">Emitido por: ${currentUser?currentUser.nome+' (ID '+currentUser.uid.slice(0,6)+')':'-'} em ${new Date().toLocaleString('pt-BR')}</p></div></div>`;
+  window.print();
+}
+function gerarAuditoria(){
+  let ta=0,tl=0,td=0;
+  let rows=funcionarios.map(f=>{const t=totaisPorFuncionario(f.id);
+   const a=t.cafe+t.almoco+t.lanche+t.janta, l=t.passagem+t.combustivel+t.estac+t.hosp;
+   ta+=a; tl+=l; td+=t.diaria;
+   return `<tr><td>${f.nome}</td><td>R$ ${a.toFixed(2)}</td><td>R$ ${l.toFixed(2)}</td><td>R$ ${t.diaria.toFixed(2)}</td></tr>`}).join('');
+  rows+=`<tr><td><b>TOTAL GERAL</b></td><td><b>R$ ${ta.toFixed(2)}</b></td><td><b>R$ ${tl.toFixed(2)}</b></td><td><b>R$ ${td.toFixed(2)}</b></td></tr>`;
+  document.getElementById('printArea').innerHTML=`<div class="doc">
+   <div class="top"><b>SAFETY EQUIPAMENTOS</b><br><span style="font-size:10px">Documento de auditoria interna</span><div class="goldbar"></div></div>
+   <div class="body"><h3>RELATÓRIO DE AUDITORIA - Setembro/2026</h3>
+   <table><tr><th>Funcionário</th><th>Alimentação</th><th>Logística</th><th>Diária</th></tr>${rows}</table>
+   <p class="hint" style="margin-top:20px">Emitido por: ${currentUser?currentUser.nome+' (ID '+currentUser.uid.slice(0,6)+')':'-'} em ${new Date().toLocaleString('pt-BR')}</p></div></div>`;
+  window.print();
+}
+
+// ---------- Dashboard ----------
+function viewDashboard(){
+  const rows=obras.filter(o=>o.tipo==='Fechada').map(o=>{
+   const gastoLanc=lancamentos.filter(l=>l.obra===o.id && l.data.startsWith(String(anoAtual))).reduce((s,l)=>s+l.alim.cafe+l.alim.almoco+l.alim.lanche+l.alim.janta+l.log.passagem+l.log.combustivel+l.log.estac+l.log.hosp+Object.values(l.diaria).reduce((a,b)=>a+b,0),0);
+   const gastoIndireto=gastosIndiretos.filter(g=>g.obra===o.id && g.data.startsWith(String(anoAtual))).reduce((s,g)=>s+g.valorTotal,0);
+   const gasto=gastoLanc+gastoIndireto;
+   return {...o,gasto,resultado:o.valor-gasto};
+  });
+  const tv=rows.reduce((s,r)=>s+r.valor,0), tg=rows.reduce((s,r)=>s+r.gasto,0), tr=rows.reduce((s,r)=>s+r.resultado,0);
+  return `<div class="card"><h2>Dashboard — Resultado do período (${anoAtual})</h2>
+   <p class="hint">Não representa o saldo real de caixa (há retiradas de sócios não contabilizadas aqui) — uso para balanço anual e projeção de meta. Gasto inclui lançamentos + gastos indiretos.</p>
+   <table><thead><tr><th>Obra</th><th>Valor</th><th>Gasto</th><th>Resultado</th></tr></thead>
+   <tbody>${rows.map(r=>`<tr><td>${r.nome}</td><td>R$ ${r.valor}</td><td>R$ ${r.gasto.toFixed(2)}</td><td>R$ ${r.resultado.toFixed(2)}</td></tr>`).join('')}
+   <tr><td><b>TOTAL</b></td><td><b>R$ ${tv}</b></td><td><b>R$ ${tg.toFixed(2)}</b></td><td><b>R$ ${tr.toFixed(2)}</b></td></tr></tbody></table>
+  </div>`;
+}
+
+renderNav();render();
+</script>
+</body>
+</html>
