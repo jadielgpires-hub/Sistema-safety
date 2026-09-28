@@ -110,7 +110,7 @@ function fazerLogin(){
     if(!doc.exists){msg.textContent='Login sem cadastro de permissões. Peça ao master pra te registrar na aba Usuários.';auth.signOut();return}
     const d=doc.data();
     if(d.ativo===false){msg.textContent='Acesso desativado. Fale com o administrador.';auth.signOut();return}
-    currentUser={uid:cred.user.uid,email:cred.user.email,nome:d.nome||cred.user.email,role:d.role||'comum'};
+    currentUser={uid:cred.user.uid,email:cred.user.email,nome:d.nome||cred.user.email,role:d.role||'colaborador',funcionarioId:d.funcionarioId||null};
     msg.textContent='Carregando dados...'; await carregarDados(); document.getElementById('login').style.display='none'; renderNav(); render();
   }).catch(()=>{msg.textContent='E-mail ou senha inválidos.'});
 }
@@ -129,13 +129,23 @@ function persistir(colecao,item,acao,antes){
 }
 async function carregarDados(){
   try{
-    const ler=async(c,arr)=>{const s=await db.collection(c).get();arr.length=0;s.docs.forEach(d=>arr.push({...d.data(),id:d.id}))};
-    await Promise.all([ler('funcionarios',funcionarios),ler('obras',obras),ler('lancamentos',lancamentos),ler('gastos',gastosIndiretos),ler('faturamentos',faturamentos)]);
+    const ler=async(c,arr)=>{const snap=await db.collection(c).get();arr.length=0;snap.docs.forEach(d=>arr.push({...d.data(),id:d.id}))};
+    const role=currentUser?.role||'colaborador';
+    if(role==='master'||role==='gestor'){
+      await Promise.all([ler('funcionarios',funcionarios),ler('obras',obras),ler('escalas',escalas),ler('lancamentos',lancamentos)]);
+      if(role==='master')await Promise.all([ler('gastos',gastosIndiretos),ler('faturamentos',faturamentos)]);
+      else {gastosIndiretos.length=0; faturamentos.length=0;}
+    } else {
+      // Colaborador recebe somente documentos de escala que contêm seu ID. Não baixa cadastros gerais.
+      funcionarios.length=0; obras.length=0; lancamentos.length=0; gastosIndiretos.length=0; faturamentos.length=0; escalas.length=0;
+      if(currentUser.funcionarioId){const snap=await db.collection('escalas').where('colabs','array-contains',currentUser.funcionarioId).get();snap.docs.forEach(d=>escalas.push({...d.data(),id:d.id}));}
+    }
     const porId=(a,b)=>a.id.localeCompare(b.id), porData=(a,b)=>(a.data||'').localeCompare(b.data||'');
-    funcionarios.sort(porId); obras.sort(porId); lancamentos.sort(porData); gastosIndiretos.sort(porData);
-    if(!obras.some(o=>o.tipo==='Administrativo')){const adm={id:'ADM',nome:'ADMINISTRATIVO',endereco:'',cnpj:'',segmento:'',tipo:'Administrativo',valor:null,responsaveis:[]};obras.push(adm);await persistir('obras',adm);}
+    funcionarios.sort(porId); obras.sort(porId); escalas.sort(porData); lancamentos.sort(porData); gastosIndiretos.sort(porData);
+    if(role==='master'&&!obras.some(o=>o.tipo==='Administrativo')){const adm={id:'ADM',nome:'ADMINISTRATIVO',endereco:'',cnpj:'',segmento:'',tipo:'Administrativo',valor:null,responsaveis:[]};obras.push(adm);await persistir('obras',adm);}
   }catch(e){alert('Erro ao carregar dados: '+e.message)}
 }
+
 function sair(){currentUser=null;auth.signOut();document.getElementById('login').style.display='flex';document.getElementById('u').value='';document.getElementById('p').value='';}
 </script>
 
@@ -161,6 +171,7 @@ let atendimentos=[];
 let gastosIndiretos=[];
 const categoriasGasto=['Obra Direto (Material)','Obra Direto (Visita Técnica)','Impostos/Encargos','RH/Pessoal (Curso/Treinamento/ASO)','Fixo/Adm'];
 let faturamentos=[];
+let escalas=[];
 let anoAtual=Math.max(2026,new Date().getFullYear());
 (function(){const sel=document.getElementById('anoSel');for(let a=2026;a<=new Date().getFullYear()+1;a++)sel.add(new Option('Ano '+a,a,false,a===anoAtual));})();
 const MESES=['Ano todo','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -185,14 +196,22 @@ function registrarPagamentoObra(id){
   render();
 }
 
-const tabsBase=['Funcionários','Obras','Lançamentos','Atendimentos','Gastos Indiretos','Recibos','Dashboard'];
+const tabsMaster=['Funcionários','Obras','Escalas','Lançamentos','Atendimentos','Gastos Indiretos','Recibos','Dashboard','Usuários'];
+const tabsGestor=['Funcionários','Obras','Escalas','Lançamentos'];
+const tabsColaborador=['Minha Escala','Meu Histórico'];
 let active='Funcionários';
-function tabsVisiveis(){return currentUser&&currentUser.role==='master'?[...tabsBase,'Usuários']:tabsBase}
+function tabsVisiveis(){
+  if(!currentUser)return [];
+  if(currentUser.role==='master')return tabsMaster;
+  if(currentUser.role==='gestor')return tabsGestor;
+  return tabsColaborador;
+}
 function nomeF(id){return funcionarios.find(f=>f.id===id)?.nome||id}
 function nomeO(id){return obras.find(o=>o.id===id)?.nome||id}
 
 function renderNav(){
-  document.getElementById('nav').innerHTML=tabsVisiveis().map(t=>
+  const tv=tabsVisiveis(); if(tv.length&&!tv.includes(active))active=tv[0];
+  document.getElementById('nav').innerHTML=tv.map(t=>
    `<button class="${t===active?'active':''}" onclick="setTab('${t}')">${t}</button>`).join('');
   if(currentUser)document.getElementById('userTag').textContent=`${currentUser.nome} (${currentUser.role})`;
 }
@@ -202,6 +221,9 @@ function render(){
   const m=document.getElementById('main');
   if(active==='Funcionários') m.innerHTML=viewFuncionarios();
   if(active==='Obras') m.innerHTML=viewObras();
+  if(active==='Escalas') m.innerHTML=viewEscalas();
+  if(active==='Minha Escala') m.innerHTML=viewMinhaEscala();
+  if(active==='Meu Histórico') m.innerHTML=viewMeuHistorico();
   if(active==='Lançamentos') m.innerHTML=viewLancamentos();
   if(active==='Atendimentos') m.innerHTML=viewAtendimentos();
   if(active==='Gastos Indiretos') m.innerHTML=viewGastos();
@@ -453,12 +475,12 @@ function cancelarItem(colecao,id){
   const motivo=(prompt('Motivo do cancelamento (obrigatório):')||'').trim(); if(!motivo)return;
   const antes=JSON.parse(JSON.stringify(x));
   x.cancelado=true; x.motivoCancelamento=motivo; x.canceladoPor=currentUser.uid; x.canceladoEm=new Date().toISOString();
-  persistir(colecao,x,'cancelado',antes); atualizarTela();
+  persistir(colecao,x,'cancelado',antes).then(()=>{if(colecao==='lancamentos')sincronizarRegistrosColaborador(x)}); atualizarTela();
 }
 function restaurarItem(colecao,id){
   const x=acharItem(colecao,id);
   if(!confirm('Restaurar este item? Ele volta a entrar nos totais e nos PDFs.'))return;
-  const antes=JSON.parse(JSON.stringify(x)); x.cancelado=false; persistir(colecao,x,'restaurado',antes); atualizarTela();
+  const antes=JSON.parse(JSON.stringify(x)); x.cancelado=false; persistir(colecao,x,'restaurado',antes).then(()=>{if(colecao==='lancamentos')sincronizarRegistrosColaborador(x)}); atualizarTela();
 }
 function botoesItem(colecao,x,fnCorrigir,extra=''){
   const b='class="btn ghost" style="margin:0 2px 2px 0;padding:3px 8px"';
@@ -498,23 +520,79 @@ function corrigirLancamento(id){
   document.getElementById('msgL').textContent='Corrigindo o lançamento de '+dataBR(l.data)+'. Altere o que precisar e toque em "Salvar correção".';
   window.scrollTo(0,0);
 }
+async function sincronizarRegistrosColaborador(l){
+  if(!l?.id)return;
+  const existentes=await db.collection('registros_colaborador').where('lancamentoId','==',l.id).get();
+  const desejados=new Set((l.colabs||[]).map(fid=>`${l.id}_${fid}`));
+  const batch=db.batch();
+  existentes.docs.forEach(d=>{if(!desejados.has(d.id))batch.delete(d.ref)});
+  (l.colabs||[]).forEach(fid=>{
+    const ref=db.collection('registros_colaborador').doc(`${l.id}_${fid}`);
+    batch.set(ref,{lancamentoId:l.id,funcionarioId:fid,data:l.data,obra:l.obra,obraNome:l.obraNome||nomeO(l.obra),diaria:(l.diaria||{})[fid]||0,cancelado:!!l.cancelado,alteradoEm:new Date().toISOString()});
+  });
+  await batch.commit();
+}
 function salvarLancamento(){
   const ids=[...document.querySelectorAll('.cColab:checked')].map(c=>c.value);
   if(!ids.length){document.getElementById('msgL').textContent='Selecione ao menos um colaborador.';return}
   const diaria={}; document.querySelectorAll('.dVal').forEach(i=>diaria[i.dataset.id]=num(i.value));
-  const dados={data:lData.value,obra:lObra.value,modo:lModo.value,colabs:ids,
+  const dados={data:lData.value,obra:lObra.value,obraNome:nomeO(lObra.value),modo:lModo.value,colabs:ids,
    alim:{cafe:num(cafe.value),almoco:num(almoco.value),lanche:num(lanche.value),janta:num(janta.value)},
    log:{passagem:num(passagem.value),combustivel:num(combustivel.value),estac:num(estac.value),hosp:num(hosp.value)},diaria};
   let msg;
   if(editandoLancId){
     const l=lancamentos.find(x=>x.id===editandoLancId), antes=JSON.parse(JSON.stringify(l));
-    Object.assign(l,dados); persistir('lancamentos',l,'corrigido',antes); editandoLancId=null; msg='Lançamento corrigido.';
+    Object.assign(l,dados); persistir('lancamentos',l,'corrigido',antes).then(()=>sincronizarRegistrosColaborador(l)); editandoLancId=null; msg='Lançamento corrigido.';
   } else {
-    persistir('lancamentos',lancamentos[lancamentos.push(dados)-1]);
+    {const l=lancamentos[lancamentos.push(dados)-1];persistir('lancamentos',l).then(()=>sincronizarRegistrosColaborador(l));}
     msg='Lançamento salvo.'+(dados.modo==='grupo'?` Valores rateados entre ${ids.length} colaborador(es).`:'');
   }
   render(); document.getElementById('msgL').textContent=msg;
 }
+
+// ---------- Escalas ----------
+let editandoEscalaId=null;
+function equipeChecks(selecionados=[]){
+ return funcionarios.filter(f=>f.ativo!==false||selecionados.includes(f.id)).map(f=>`<label class="chk"><input type="checkbox" class="eColab" value="${f.id}" ${selecionados.includes(f.id)?'checked':''}> ${f.nome}</label>`).join('');
+}
+function viewEscalas(){
+ const lista=escalas.slice().sort((a,b)=>(b.data+b.inicio).localeCompare(a.data+a.inicio));
+ return `<div class="card"><h2>${editandoEscalaId?'Editar':'Nova'} escala</h2>
+  <div class="row"><div><label>Data</label><input type="date" id="eData" value="${hoje()}"></div><div><label>Obra/Cliente</label><select id="eObra">${obras.filter(o=>o.tipo!=='Administrativo').map(o=>`<option value="${o.id}">${o.nome}</option>`).join('')}</select></div></div>
+  <div class="row"><div><label>Início</label><input type="time" id="eInicio"></div><div><label>Fim</label><input type="time" id="eFim"></div></div>
+  <label>Serviço / orientação</label><input id="eServico" placeholder="Ex.: instalação de tela / acesso pela portaria principal">
+  <label>Equipe prevista</label><div id="eEquipe">${equipeChecks()}</div>
+  <button class="btn gold" onclick="salvarEscala()">${editandoEscalaId?'Salvar alteração':'Salvar escala'}</button>${editandoEscalaId?'<button class="btn ghost" onclick="editandoEscalaId=null;render()">Cancelar</button>':''}
+  <p class="hint">A escala é planejamento. Ela não gera diária nem pagamento automaticamente.</p></div>
+  <div class="card"><h2>Escalas registradas</h2><table><thead><tr><th>Data</th><th>Obra</th><th>Horário</th><th>Equipe</th><th></th></tr></thead><tbody>${lista.map(e=>`<tr style="${e.cancelada?'opacity:.5':''}"><td>${dataBR(e.data)}</td><td>${nomeO(e.obra)}</td><td>${e.inicio||'-'}–${e.fim||'-'}</td><td>${(e.colabs||[]).map(nomeF).join(', ')}</td><td>${e.cancelada?'<span class="tag">CANCELADA</span>':`<button class="btn ghost" style="margin:0;padding:3px 8px" onclick="editarEscala('${e.id}')">editar</button> <button class="btn ghost" style="margin:0;padding:3px 8px" onclick="cancelarEscala('${e.id}')">cancelar</button>`}</td></tr>`).join('')||'<tr><td colspan="5">Nenhuma escala registrada.</td></tr>'}</tbody></table></div>`;
+}
+function salvarEscala(){
+ const colabs=[...document.querySelectorAll('.eColab:checked')].map(x=>x.value); if(!colabs.length)return alert('Selecione ao menos um colaborador.');
+ const dados={data:eData.value,obra:eObra.value,obraNome:nomeO(eObra.value),inicio:eInicio.value,fim:eFim.value,servico:eServico.value.trim(),colabs,cancelada:false};
+ // Aviso de conflito objetivo, sem bloquear a decisão do gestor.
+ const conflitos=escalas.filter(e=>!e.cancelada&&e.id!==editandoEscalaId&&e.data===dados.data&&e.colabs.some(id=>colabs.includes(id))&&(!dados.inicio||!dados.fim||!e.inicio||!e.fim||(dados.inicio<e.fim&&dados.fim>e.inicio)));
+ if(conflitos.length&&!confirm('Atenção: há colaborador(es) já escalado(s) nesse período. Deseja salvar mesmo assim?'))return;
+ if(editandoEscalaId){const e=escalas.find(x=>x.id===editandoEscalaId),antes=JSON.parse(JSON.stringify(e));Object.assign(e,dados);persistir('escalas',e,'corrigido',antes);editandoEscalaId=null;}
+ else {escalas.push(dados);persistir('escalas',dados);}
+ render();
+}
+function editarEscala(id){
+ const e=escalas.find(x=>x.id===id); editandoEscalaId=id; render();
+ eData.value=e.data;eObra.value=e.obra;eInicio.value=e.inicio||'';eFim.value=e.fim||'';eServico.value=e.servico||'';
+ document.getElementById('eEquipe').innerHTML=equipeChecks(e.colabs||[]); window.scrollTo(0,0);
+}
+function cancelarEscala(id){const e=escalas.find(x=>x.id===id);if(!confirm('Cancelar esta escala? O histórico será preservado.'))return;const antes=JSON.parse(JSON.stringify(e));e.cancelada=true;persistir('escalas',e,'cancelado',antes);render();}
+function viewMinhaEscala(){
+ const fid=currentUser?.funcionarioId; if(!fid)return '<div class="card"><h2>Minha Escala</h2><p>Seu login ainda não está vinculado ao seu cadastro de funcionário. Procure um administrador.</p></div>';
+ const lista=escalas.filter(e=>!e.cancelada&&(e.colabs||[]).includes(fid)).sort((a,b)=>(a.data+a.inicio).localeCompare(b.data+b.inicio));
+ return `<div class="card"><h2>Minha Escala</h2><p class="hint">Locais e horários previstos de trabalho. Alterações de escala são feitas pela gestão.</p>${lista.map(e=>`<div class="card"><b>${dataBR(e.data)} · ${e.inicio||'-'}–${e.fim||'-'}</b><br>${e.obraNome||nomeO(e.obra)}${e.servico?`<div class="hint">${e.servico}</div>`:''}</div>`).join('')||'<p>Nenhuma escala registrada para você.</p>'}</div>`;
+}
+async function carregarMeuHistorico(){
+ const box=document.getElementById('meuHistBox'),fid=currentUser?.funcionarioId;if(!box||!fid)return;
+ try{const snap=await db.collection('registros_colaborador').where('funcionarioId','==',fid).get();const ls=snap.docs.map(d=>({...d.data(),id:d.id})).filter(l=>!l.cancelado).sort((a,b)=>b.data.localeCompare(a.data));
+ box.innerHTML=`<table><thead><tr><th>Data</th><th>Obra</th><th>Diária</th></tr></thead><tbody>${ls.map(l=>`<tr><td>${dataBR(l.data)}</td><td>${l.obraNome||l.obra}</td><td>${brl(l.diaria||0)}</td></tr>`).join('')||'<tr><td colspan="3">Nenhum trabalho realizado registrado.</td></tr>'}</tbody></table>`;}catch(e){box.textContent='Não foi possível carregar seu histórico.';}
+}
+function viewMeuHistorico(){setTimeout(carregarMeuHistorico,0);return `<div class="card"><h2>Meu Histórico</h2><p class="hint">Serviços efetivamente lançados e valor da sua diária registrada.</p><div id="meuHistBox">Carregando...</div></div>`;}
 
 // ---------- Atendimentos ----------
 function viewAtendimentos(){
@@ -604,8 +682,8 @@ function viewUsuarios(){
    <p class="hint">1) Crie o login em Firebase Console → Authentication → Add user (e-mail/senha). 2) Copie o UID gerado e registre aqui com o papel da pessoa.</p>
    <div class="row"><div><label>UID (do Firebase Authentication)</label><input id="nuUid"></div>
    <div><label>Nome</label><input id="nuNome"></div></div>
-   <div class="row"><div><label>Papel</label><select id="nuRole"><option value="comum">Comum</option><option value="master">Master</option></select></div></div>
-   <button class="btn gold" onclick="salvarUsuario()">Registrar usuário</button>
+   <div class="row"><div><label>Papel</label><select id="nuRole"><option value="colaborador">Colaborador</option><option value="gestor">Gestor</option><option value="master">Master/Sócio</option></select></div></div>
+   <div><label>Funcionário vinculado (somente colaborador)</label><select id="nuFuncionario"><option value="">-- nenhum --</option>${funcionarios.filter(f=>f.ativo!==false).map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div><button class="btn gold" onclick="salvarUsuario()">Registrar usuário</button>
   </div>
   <div class="card"><h2>Usuários cadastrados</h2><table id="tbUsuarios"><tr><td>Carregando...</td></tr></table></div>`;
 }
@@ -617,7 +695,7 @@ async function carregarUsuarios(){
 }
 function salvarUsuario(){
   const uid=nuUid.value.trim(); if(!uid)return;
-  db.collection('usuarios').doc(uid).set({nome:nuNome.value||'-',role:nuRole.value,ativo:true}).then(carregarUsuarios);
+  db.collection('usuarios').doc(uid).set({nome:nuNome.value||'-',role:nuRole.value,ativo:true,funcionarioId:nuRole.value==='colaborador'?(nuFuncionario.value||null):null}).then(carregarUsuarios);
 }
 function toggleUsuario(uid,ativar){
   db.collection('usuarios').doc(uid).update({ativo:ativar}).then(carregarUsuarios);
