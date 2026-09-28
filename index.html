@@ -96,13 +96,30 @@ function fazerLogin(){
     const d=doc.data();
     if(d.ativo===false){msg.textContent='Acesso desativado. Fale com o administrador.';auth.signOut();return}
     currentUser={uid:cred.user.uid,email:cred.user.email,nome:d.nome||cred.user.email,role:d.role||'comum'};
-    document.getElementById('login').style.display='none'; renderNav(); render();
+    msg.textContent='Carregando dados...'; await carregarDados(); document.getElementById('login').style.display='none'; renderNav(); render();
   }).catch(()=>{msg.textContent='E-mail ou senha inválidos.'});
 }
 function enviarRecuperacao(){
   const email=document.getElementById('eRecuperar').value.trim(); const msg=document.getElementById('msgRecuperar');
   if(!email){msg.textContent='Informe um e-mail.';return}
   auth.sendPasswordResetEmail(email).finally(()=>{msg.textContent='Se este e-mail estiver cadastrado, um link de redefinição foi enviado.'});
+}
+function persistir(colecao,item){
+  const agora=new Date().toISOString(), novo=!item.criadoPor;
+  if(!item.id) item.id=db.collection(colecao).doc().id;
+  if(novo){item.criadoPor=currentUser.uid;item.criadoEm=agora;}
+  item.alteradoPor=currentUser.uid; item.alteradoEm=agora;
+  db.collection('auditoria').add({colecao,itemId:item.id,acao:novo?'criado':'alterado',uid:currentUser.uid,nome:currentUser.nome,em:agora});
+  return db.collection(colecao).doc(item.id).set(JSON.parse(JSON.stringify(item))).catch(e=>alert('Erro ao salvar: '+e.message));
+}
+async function carregarDados(){
+  try{
+    const ler=async(c,arr)=>{const s=await db.collection(c).get();arr.length=0;s.docs.forEach(d=>arr.push({...d.data(),id:d.id}))};
+    await Promise.all([ler('funcionarios',funcionarios),ler('obras',obras),ler('lancamentos',lancamentos),ler('gastos',gastosIndiretos),ler('faturamentos',faturamentos)]);
+    const porId=(a,b)=>a.id.localeCompare(b.id), porData=(a,b)=>(a.data||'').localeCompare(b.data||'');
+    funcionarios.sort(porId); obras.sort(porId); lancamentos.sort(porData); gastosIndiretos.sort(porData);
+    if(!obras.some(o=>o.tipo==='Administrativo')){const adm={id:'ADM',nome:'ADMINISTRATIVO',endereco:'',cnpj:'',segmento:'',tipo:'Administrativo',valor:null,responsaveis:[]};obras.push(adm);await persistir('obras',adm);}
+  }catch(e){alert('Erro ao carregar dados: '+e.message)}
 }
 function sair(){currentUser=null;auth.signOut();document.getElementById('login').style.display='flex';document.getElementById('u').value='';document.getElementById('p').value='';}
 </script>
@@ -122,41 +139,13 @@ function sair(){currentUser=null;auth.signOut();document.getElementById('login')
 
 <script>
 // ---------- dados de exemplo ----------
-const funcionarios=[
- {id:'F001',nome:'JADIEL GOMES PIRES',funcao:'ESCALADOR N3',cpf:'111.111.111-11',pix:'111.111.111-11',banco:'Nubank',tel:'21999990001',endereco:'Rua A, 10, RJ'},
- {id:'F002',nome:'ALEXANDRE SANTOS SILVA',funcao:'AUXILIAR TECNICO',cpf:'222.222.222-22',pix:'21999990002',banco:'Bradesco',tel:'21999990002',endereco:'Rua B, 20, RJ'},
- {id:'F003',nome:'CLAUDIO LUIZ DE LIMA FERREIRA',funcao:'ESCALADOR N1',cpf:'333.333.333-33',pix:'333.333.333-33',banco:'Caixa',tel:'21999990003',endereco:'Rua C, 30, RJ'},
-];
-const obras=[
- {id:'O001',nome:'KLACON 01',endereco:'Rua das Laranjeiras, RJ',cnpj:'22.015.773/0001-84',segmento:'Civil',cno:'12345.67890/12',enderecoObra:'Rua das Laranjeiras, 500, RJ',
-  descricaoServico:'Manutenção de fachada por acesso por cordas',numOS:'OS-2026-014',numContrato:'CT-2026-014',tipo:'Fechada',valor:10075,
-  responsaveis:[{nome:'JESUEL DE OLIVEIRA',funcao:'Engenheiro',tel:'21986126756',email:'jesuel@klacon.com.br'}],pagamentos:[]},
- {id:'O002',nome:'BOULEVARD 01',endereco:'Av. Boulevard, RJ',cnpj:'22.562.584/0001-57',segmento:'Civil',cno:'98765.43210/34',enderecoObra:'Av. Boulevard, 900, RJ',
-  descricaoServico:'Pintura de fachada',numOS:'OS-2026-021',numContrato:'CT-2026-021',tipo:'Fechada',valor:39400,
-  responsaveis:[{nome:'LUIZ',funcao:'Síndico',tel:'',email:''},{nome:'CAIO PEREIRA',funcao:'Zelador',tel:'',email:''}],pagamentos:[{data:'2026-04-10',valor:20000}]},
- {id:'O003',nome:'HOTEL MARINE 01',endereco:'Marina da Glória, RJ',cnpj:'',segmento:'Maritimo',embarcacao:'ÁGUAS CLARAS',imo:'IMO 9123456',localizacaoAtual:'Porto do Rio de Janeiro',
-  historicoLocalizacao:[{data:'2026-08-13',local:'Porto do Rio de Janeiro'}],descricaoServico:'Manutenção de casco por acesso por cordas',numOS:'OS-2026-030',numContrato:'CT-2026-030',
-  tipo:'Atendimento',valor:null,responsaveis:[{nome:'JORGE',funcao:'Gerente de Manutenção',tel:'21979628132',email:'jorge.rocha@csmarinaleblon.com.br'}]},
- {id:'O004',nome:'ADMINISTRATIVO',endereco:'',cnpj:'',segmento:'',tipo:'Administrativo',valor:null,responsaveis:[]},
-];
-let lancamentos=[
- {data:'2026-09-05',obra:'O003',modo:'individual',colabs:['F001'],alim:{cafe:8,almoco:22,lanche:0,janta:0},log:{passagem:30,combustivel:0,estac:0,hosp:0},diaria:{'F001':400}},
- {data:'2026-09-19',obra:'O003',modo:'individual',colabs:['F001'],alim:{cafe:8,almoco:22,lanche:0,janta:0},log:{passagem:30,combustivel:0,estac:0,hosp:0},diaria:{'F001':400}},
-];
-let atendimentos=[
- {obra:'O003',inicio:'2026-09-05',fim:'2026-09-07',desc:'Manutenção urgente de rede'},
- {obra:'O003',inicio:'2026-09-19',fim:'2026-09-20',desc:'Retorno solicitado pelo cliente'},
-];
-let gastosIndiretos=[
- {data:'2026-09-03',categoria:'Obra Direto (Material)',desc:'Cabo de aço e conectores',obra:'O001',valorTotal:607.95,pagamentos:[{data:'2026-09-03',valor:607.95}]},
- {data:'2026-09-10',categoria:'Impostos/Encargos',desc:'Nota fiscal do serviço',obra:'O001',valorTotal:1107.70,pagamentos:[{data:'2026-09-10',valor:1107.70}]},
- {data:'2026-09-12',categoria:'RH/Pessoal (Curso/Treinamento/ASO)',desc:'ASO e exames NR',obra:'O002',valorTotal:4181.00,pagamentos:[{data:'2026-09-12',valor:2000}]},
-];
+const funcionarios=[];
+const obras=[];
+let lancamentos=[];
+let atendimentos=[];
+let gastosIndiretos=[];
 const categoriasGasto=['Obra Direto (Material)','Obra Direto (Visita Técnica)','Impostos/Encargos','RH/Pessoal (Curso/Treinamento/ASO)','Fixo/Adm'];
-let faturamentos=[
- {obra:'O003',data:'2026-09-05',valor:2000},
- {obra:'O003',data:'2026-09-19',valor:3000},
-];
+let faturamentos=[];
 let anoAtual=2026;
 function statusGasto(g){
   const pago=g.pagamentos.reduce((s,p)=>s+p.valor,0);
@@ -166,12 +155,12 @@ function statusGasto(g){
 }
 function registrarPagamentoGasto(i){
   const v=parseFloat(prompt('Valor da parcela paga agora:')); if(!v)return;
-  gastosIndiretos[i].pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v});
+  gastosIndiretos[i].pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v}); persistir('gastos',gastosIndiretos[i]);
   render();
 }
 function registrarPagamentoObra(id){
   const v=parseFloat(prompt('Valor recebido nesta medição:')); if(!v)return;
-  const o=obras.find(x=>x.id===id); o.pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v});
+  const o=obras.find(x=>x.id===id); o.pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v}); persistir('obras',o);
   render();
 }
 
@@ -198,6 +187,9 @@ function render(){
   if(active==='Recibos') m.innerHTML=viewRecibos();
   if(active==='Dashboard') m.innerHTML=viewDashboard();
   if(active==='Usuários') m.innerHTML=viewUsuarios();
+  if(active==='Funcionários')filtroF('');
+  if(active==='Obras')filtroO('');
+  if(active==='Lançamentos'){renderColabs();renderDiarias();}
 }
 
 // ---------- Funcionários ----------
@@ -236,8 +228,8 @@ function editarFuncionario(id){
 function salvarFuncionario(){
   const nome=nfNome.value.trim(); if(!nome){return}
   const dados={nome,funcao:nfFuncao.value||'-',cpf:nfCpf.value||'-',pix:nfPix.value||'',banco:nfBanco.value||'',tel:nfTel.value||'',endereco:nfEndereco.value||''};
-  if(editandoFId){ Object.assign(funcionarios.find(x=>x.id===editandoFId),dados); editandoFId=null; }
-  else { dados.id='F'+String(funcionarios.length+1).padStart(3,'0'); funcionarios.push(dados); }
+  if(editandoFId){ {const fx=funcionarios.find(x=>x.id===editandoFId);Object.assign(fx,dados);persistir('funcionarios',fx);} editandoFId=null; }
+  else { dados.id='F'+String(funcionarios.length+1).padStart(3,'0'); funcionarios.push(dados); persistir('funcionarios',dados); }
   document.getElementById('formNovoF').style.display='none';
   render(); filtroF('');
 }
@@ -356,18 +348,18 @@ function salvarObra(){
     const o=obras.find(x=>x.id===editandoObraId);
     if(noSeg.value==='Maritimo'&&!o.historicoLocalizacao)base.historicoLocalizacao=noLocal.value?[{data:new Date().toISOString().slice(0,10),local:noLocal.value}]:[];
     else if(noSeg.value==='Maritimo')base.historicoLocalizacao=o.historicoLocalizacao;
-    Object.assign(o,base); editandoObraId=null;
+    Object.assign(o,base); persistir('obras',o); editandoObraId=null;
   } else {
     base.id='O'+String(obras.length+1).padStart(3,'0'); base.pagamentos=[];
     if(noSeg.value==='Maritimo')base.historicoLocalizacao=noLocal.value?[{data:new Date().toISOString().slice(0,10),local:noLocal.value}]:[];
-    obras.push(base);
+    obras.push(base); persistir('obras',base);
   }
   toggleNovoO(); render(); filtroO('');
 }
 function atualizarLocalizacao(id){
   const novo=prompt('Nova localização (porto, estaleiro ou área de fundeio):'); if(!novo)return;
   const o=obras.find(x=>x.id===id);
-  o.localizacaoAtual=novo; o.historicoLocalizacao.push({data:new Date().toISOString().slice(0,10),local:novo});
+  o.localizacaoAtual=novo; o.historicoLocalizacao.push({data:new Date().toISOString().slice(0,10),local:novo}); persistir('obras',o);
   render();
 }
 function verHistoricoLocal(id){
@@ -440,13 +432,13 @@ function salvarLancamento(){
   if(!ids.length){document.getElementById('msgL').textContent='Selecione ao menos um colaborador.';return}
   const diaria={};
   document.querySelectorAll('.dVal').forEach(i=>diaria[i.dataset.id]=num(i.value));
-  lancamentos.push({
+  persistir('lancamentos',lancamentos[lancamentos.push({
    data:document.getElementById('lData').value, obra:document.getElementById('lObra').value,
    modo:document.getElementById('lModo').value, colabs:ids,
    alim:{cafe:num(cafe.value),almoco:num(almoco.value),lanche:num(lanche.value),janta:num(janta.value)},
    log:{passagem:num(passagem.value),combustivel:num(combustivel.value),estac:num(estac.value),hosp:num(hosp.value)},
    diaria
-  });
+  })-1]);
   document.getElementById('msgL').textContent='Lançamento salvo. '+(document.getElementById('lModo').value==='grupo'?`Valores rateados entre ${ids.length} colaborador(es).`:'');
   render();
 }
@@ -476,7 +468,7 @@ function abrirAtendimento(oid){
 }
 function salvarFaturamento(oid){
   const v=num(document.getElementById('fValor').value); if(!v)return;
-  faturamentos.push({obra:oid,data:document.getElementById('fData').value,valor:v});
+  persistir('faturamentos',faturamentos[faturamentos.push({obra:oid,data:document.getElementById('fData').value,valor:v})-1]);
   abrirAtendimento(oid);
 }
 
@@ -502,7 +494,7 @@ function viewGastos(){
 }
 function salvarGasto(){
   const desc=gDesc.value.trim(); if(!desc){return}
-  gastosIndiretos.push({data:gData.value,categoria:gCat.value,desc,obra:gObra.value,valorTotal:num(gValor.value),pagamentos:[]});
+  persistir('gastos',gastosIndiretos[gastosIndiretos.push({data:gData.value,categoria:gCat.value,desc,obra:gObra.value,valorTotal:num(gValor.value),pagamentos:[]})-1]);
   render();
 }
 
