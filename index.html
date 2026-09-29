@@ -228,8 +228,9 @@ const tabsColaborador=['Minha Escala','Meu Histórico'];
 let active='Funcionários';
 function tabsVisiveis(){
   if(!currentUser)return [];
-  if(currentUser.role==='master')return currentUser.gerenciarUsuarios?[...tabsMaster,'Usuários']:tabsMaster;
-  if(currentUser.role==='gestor')return tabsGestor;
+  const pessoais=currentUser.funcionarioId?[...tabsColaborador]:[];
+  if(currentUser.role==='master')return currentUser.gerenciarUsuarios?[...tabsMaster,...pessoais,'Usuários']:[...tabsMaster,...pessoais];
+  if(currentUser.role==='gestor')return [...tabsGestor,...pessoais];
   return tabsColaborador;
 }
 function nomeF(id){return funcionarios.find(f=>f.id===id)?.nome||id}
