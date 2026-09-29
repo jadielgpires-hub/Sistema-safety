@@ -217,8 +217,17 @@ function registrarPagamentoGasto(i){
   render();
 }
 function registrarPagamentoObra(id){
-  const v=parseFloat(prompt('Valor recebido nesta medição:')); if(!v)return;
-  const o=obras.find(x=>x.id===id); o.pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v}); persistir('obras',o);
+  const o=obras.find(x=>x.id===id); if(!o)return;
+  const recebido=(o.pagamentos||[]).reduce((s,p)=>s+num(p.valor),0);
+  const saldo=Math.max(0,num(o.valor)-recebido);
+  if(saldo<=0)return alert('Esta obra já está totalmente recebida. Não há saldo disponível para nova medição.');
+  const entrada=prompt('Valor recebido nesta medição:'); if(entrada===null)return;
+  const v=parseFloat(String(entrada).replace(',','.'));
+  if(!(v>0))return alert('Informe um valor de medição maior que zero.');
+  if(v>saldo)return alert('A medição não pode ser maior que o saldo da obra de '+brl(saldo)+'.');
+  o.pagamentos=o.pagamentos||[];
+  o.pagamentos.push({data:new Date().toISOString().slice(0,10),valor:v});
+  persistir('obras',o);
   render();
 }
 
