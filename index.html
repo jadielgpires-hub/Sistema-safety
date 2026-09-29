@@ -358,6 +358,8 @@ function abrirF(fid,mes){
 
 // ---------- Obras ----------
 let editandoObraId=null;
+function statusObra(o){return o?.status||'em_andamento'}
+function labelStatusObra(o){return ({nao_iniciada:'NÃO INICIADA',em_andamento:'EM ANDAMENTO',encerrada:'ENCERRADA'})[statusObra(o)]||'EM ANDAMENTO'}
 function viewObras(){
   return `<div class="card">
    <h2>Buscar obra / cliente</h2>
@@ -374,6 +376,9 @@ function viewObras(){
     <div class="row"><div><label>Endereço</label><input id="noEndereco"></div><div><label>CNPJ</label><input id="noCnpj"></div></div>
     <div class="row"><div><label>Descrição do serviço</label><input id="noDesc"></div></div>
     <div class="row"><div><label>Número da Ordem de Serviço</label><input id="noOS"></div><div><label>Número do contrato</label><input id="noContrato"></div></div>
+    <div class="section-title">Ciclo da obra</div>
+    <div class="row"><div><label>Status</label><select id="noStatus"><option value="nao_iniciada">Não iniciada</option><option value="em_andamento">Em andamento</option><option value="encerrada">Encerrada</option></select></div>
+    <div><label>Data de início</label><input id="noDataInicio" type="date"></div><div><label>Data de término</label><input id="noDataFim" type="date"></div></div>
     <div id="segCivil"><div class="section-title">Civil</div><div class="row"><div><label>CNO</label><input id="noCno"></div><div><label>Endereço da obra</label><input id="noEnderecoObra"></div></div></div>
     <div id="segInd" style="display:none"><div class="section-title">Industrial</div><div class="row"><div><label>Endereço do serviço</label><input id="noEnderecoObraInd"></div></div></div>
     <div id="segMar" style="display:none"><div class="section-title">Marítimo</div><div class="row"><div><label>Embarcação</label><input id="noEmbarcacao"></div>
@@ -401,8 +406,8 @@ function addRespRow(r){
 function toggleNovoO(){const d=document.getElementById('formNovoO');d.style.display=d.style.display==='none'?'block':'none';if(!document.getElementById('respRows').children.length)addRespRow();}
 function novaObra(){
   editandoObraId=null;
-  ['noNome','noValor','noEndereco','noCnpj','noDesc','noOS','noContrato','noCno','noEnderecoObra','noEnderecoObraInd','noEmbarcacao','noImo','noLocal'].forEach(id=>document.getElementById(id).value='');
-  noTipo.value='Fechada'; noSeg.value='Civil'; toggleSegForm();
+  ['noNome','noValor','noEndereco','noCnpj','noDesc','noOS','noContrato','noCno','noEnderecoObra','noEnderecoObraInd','noEmbarcacao','noImo','noLocal','noDataInicio','noDataFim'].forEach(id=>document.getElementById(id).value='');
+  noTipo.value='Fechada'; noSeg.value='Civil'; noStatus.value='nao_iniciada'; toggleSegForm();
   document.getElementById('respRows').innerHTML=''; addRespRow();
   document.getElementById('formNovoO').style.display='block';
 }
@@ -412,6 +417,7 @@ function editarObra(id){
   noNome.value=o.nome; noTipo.value=o.tipo; noSeg.value=o.segmento||'Civil'; noValor.value=o.valor||'';
   noEndereco.value=o.endereco||''; noCnpj.value=o.cnpj||''; noDesc.value=o.descricaoServico||'';
   noOS.value=o.numOS||''; noContrato.value=o.numContrato||'';
+  noStatus.value=statusObra(o); noDataInicio.value=o.dataInicio||''; noDataFim.value=o.dataFim||'';
   noCno.value=o.cno||''; noEnderecoObra.value=o.enderecoObra||''; noEnderecoObraInd.value=o.enderecoObra||'';
   noEmbarcacao.value=o.embarcacao||''; noImo.value=o.imo||''; noLocal.value=o.localizacaoAtual||'';
   toggleSegForm();
@@ -420,12 +426,14 @@ function editarObra(id){
 }
 function salvarObra(){
   const nome=noNome.value.trim(); if(!nome){return}
+  if(noDataInicio.value&&noDataFim.value&&noDataFim.value<noDataInicio.value)return alert('A data de término não pode ser anterior à data de início.');
+  if(noStatus.value==='encerrada'&&!noDataFim.value)return alert('Informe a data de término para encerrar a obra.');
   const responsaveis=[...document.querySelectorAll('.respRow')].map(r=>({
    nome:r.querySelector('.rNome').value, funcao:r.querySelector('.rFuncao').value,
    tel:r.querySelector('.rTel').value, email:r.querySelector('.rEmail').value})).filter(r=>r.nome);
   const base={nome,endereco:noEndereco.value||'',cnpj:noCnpj.value||'',segmento:noSeg.value,
    descricaoServico:noDesc.value||'',numOS:noOS.value||'',numContrato:noContrato.value||'',
-   responsaveis,tipo:noTipo.value,valor:noTipo.value==='Fechada'?num(noValor.value):null};
+   responsaveis,tipo:noTipo.value,valor:noTipo.value==='Fechada'?num(noValor.value):null,status:noStatus.value||'em_andamento',dataInicio:noDataInicio.value||'',dataFim:noDataFim.value||''};
   if(noSeg.value==='Civil') Object.assign(base,{cno:noCno.value||'',enderecoObra:noEnderecoObra.value||''});
   if(noSeg.value==='Industrial') Object.assign(base,{enderecoObra:noEnderecoObraInd.value||''});
   if(noSeg.value==='Maritimo') Object.assign(base,{embarcacao:noEmbarcacao.value||'',imo:noImo.value||'',localizacaoAtual:noLocal.value||''});
@@ -453,17 +461,30 @@ function verHistoricoLocal(id){
    <table><thead><tr><th>Data</th><th>Local</th></tr></thead>
    <tbody>${o.historicoLocalizacao.map(h=>`<tr><td>${h.data}</td><td>${h.local}</td></tr>`).join('')}</tbody></table></div>`;
 }
+function encerrarObra(id){
+  const o=obras.find(x=>x.id===id); if(!o||o.tipo==='Administrativo'||statusObra(o)==='encerrada')return;
+  if(o.tipo==='Fechada'){
+    const recebido=(o.pagamentos||[]).reduce((s,p)=>s+num(p.valor),0), saldo=Math.max(0,num(o.valor)-recebido);
+    if(saldo>0&&!confirm('Esta obra ainda possui saldo de '+brl(saldo)+' a receber. Deseja encerrá-la mesmo assim?'))return;
+  }
+  const data=(prompt('Data de término da obra (AAAA-MM-DD):',o.dataFim||hoje())||'').trim(); if(!data)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(data))return alert('Data inválida. Use o formato AAAA-MM-DD.');
+  if(o.dataInicio&&data<o.dataInicio)return alert('A data de término não pode ser anterior à data de início.');
+  const antes=JSON.parse(JSON.stringify(o)); o.status='encerrada'; o.dataFim=data;
+  persistir('obras',o,'encerrada',antes); render(); filtroO('');
+}
 function filtroO(q){
   q=q.toLowerCase();
   const list=obras.filter(o=>[o.nome,o.cnpj,o.cno,o.imo,o.embarcacao,o.numOS,o.numContrato,o.id,...(o.responsaveis||[]).map(r=>r.nome)].join(' ').toLowerCase().includes(q));
   document.getElementById('tbO').innerHTML=list.map(o=>{
    const resp=(o.responsaveis||[]).map(r=>`${r.nome}${r.funcao?' ('+r.funcao+')':''}`).join('; ')||'-';
    let seg=o.segmento==='Maritimo'?'Marítimo':(o.segmento||o.tipo);
+   if(o.tipo!=='Administrativo')seg+=`<br><span class="tag">${labelStatusObra(o)}</span>${o.dataInicio?`<br><span class="hint">Início: ${dataBR(o.dataInicio)}${o.dataFim?' · Fim: '+dataBR(o.dataFim):''}</span>`:''}`;
    let osct=`${o.numOS||'-'}<br>${o.numContrato||''}`;
    if(o.segmento==='Maritimo') osct+=`<br><span class="hint">${o.embarcacao||''} · ${o.imo||''} · ${o.localizacaoAtual||''}</span> <button class="btn ghost" style="margin:2px 2px 0;padding:3px 8px" onclick="event.stopPropagation();atualizarLocalizacao('${o.id}')">atualizar local</button><button class="btn ghost" style="margin:2px 0 0;padding:3px 8px" onclick="event.stopPropagation();verHistoricoLocal('${o.id}')">histórico</button>`;
    if(o.tipo==='Fechada'){const pago=(o.pagamentos||[]).reduce((s,p)=>s+p.valor,0);
     osct+=`<br><span class="hint">Recebido R$ ${pago.toFixed(2)} / Saldo R$ ${(o.valor-pago).toFixed(2)}</span> <button class="btn ghost" style="margin:2px 0 0;padding:3px 8px" onclick="event.stopPropagation();registrarPagamentoObra('${o.id}')">+ medição</button>`;}
-   return `<tr><td>${o.id}</td><td onclick="editarObra('${o.id}')" style="cursor:pointer">${o.nome}</td><td><span class="tag">${seg}</span></td><td>${osct}</td><td>${resp}</td><td><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="editarObra('${o.id}')">editar</button></td></tr>`}).join('');
+   return `<tr><td>${o.id}</td><td onclick="editarObra('${o.id}')" style="cursor:pointer">${o.nome}</td><td><span class="tag">${seg}</span></td><td>${osct}</td><td>${resp}</td><td><button class="btn ghost" style="margin:0 2px 2px 0;padding:3px 8px" onclick="editarObra('${o.id}')">editar</button>${o.tipo!=='Administrativo'&&statusObra(o)!=='encerrada'?`<button class="btn ghost" style="margin:0;padding:3px 8px" onclick="encerrarObra('${o.id}')">encerrar</button>`:''}</td></tr>`}).join('');
 }
 setTimeout(()=>{if(active==='Obras')filtroO('')},0);
 
@@ -594,7 +615,7 @@ function equipeChecks(selecionados=[]){
 function viewEscalas(){
  const lista=escalas.slice().sort((a,b)=>(b.data+b.inicio).localeCompare(a.data+a.inicio));
  return `<div class="card"><h2>${editandoEscalaId?'Editar':'Nova'} escala</h2>
-  <div class="row"><div><label>Data</label><input type="date" id="eData" value="${hoje()}"></div><div><label>Obra/Cliente</label><select id="eObra">${obras.filter(o=>o.tipo!=='Administrativo').map(o=>`<option value="${o.id}">${o.nome}</option>`).join('')}</select></div></div>
+  <div class="row"><div><label>Data</label><input type="date" id="eData" value="${hoje()}"></div><div><label>Obra/Cliente</label><select id="eObra">${obras.filter(o=>o.tipo!=='Administrativo'&&(statusObra(o)!=='encerrada'||(editandoEscalaId&&escalas.find(e=>e.id===editandoEscalaId)?.obra===o.id))).map(o=>`<option value="${o.id}">${o.nome}${statusObra(o)==='nao_iniciada'?' — não iniciada':''}</option>`).join('')}</select></div></div>
   <div class="row"><div><label>Início</label><input type="time" id="eInicio"></div><div><label>Fim</label><input type="time" id="eFim"></div></div>
   <label>Serviço / orientação</label><input id="eServico" placeholder="Ex.: instalação de tela / acesso pela portaria principal">
   <label>Equipe prevista</label><div id="eEquipe">${equipeChecks()}</div>
@@ -604,6 +625,7 @@ function viewEscalas(){
 }
 function salvarEscala(){
  const colabs=[...document.querySelectorAll('.eColab:checked')].map(x=>x.value); if(!colabs.length)return alert('Selecione ao menos um colaborador.');
+ const obraEscala=obras.find(o=>o.id===eObra.value); if(!editandoEscalaId&&obraEscala&&statusObra(obraEscala)==='encerrada')return alert('Esta obra está encerrada e não aceita nova escala.');
  const dados={data:eData.value,obra:eObra.value,obraNome:nomeO(eObra.value),inicio:eInicio.value,fim:eFim.value,servico:eServico.value.trim(),colabs,cancelada:false};
  // Aviso de conflito objetivo, sem bloquear a decisão do gestor.
  const conflitos=escalas.filter(e=>!e.cancelada&&e.id!==editandoEscalaId&&e.data===dados.data&&e.colabs.some(id=>colabs.includes(id))&&(!dados.inicio||!dados.fim||!e.inicio||!e.fim||(dados.inicio<e.fim&&dados.fim>e.inicio)));
