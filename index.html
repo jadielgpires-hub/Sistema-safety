@@ -713,7 +713,7 @@ function viewUsuarios(){
    <div class="row"><div><label>UID (do Firebase Authentication)</label><input id="nuUid"></div>
    <div><label>Nome</label><input id="nuNome"></div></div>
    <div class="row"><div><label>Papel</label><select id="nuRole"><option value="colaborador">Colaborador</option><option value="gestor">Gestor</option><option value="master">Master/Sócio</option></select></div></div>
-   <div><label>Funcionário vinculado (somente colaborador)</label><select id="nuFuncionario"><option value="">-- nenhum --</option>${funcionarios.filter(f=>f.ativo!==false).map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div><button class="btn gold" onclick="salvarUsuario()">Registrar usuário</button>
+   <div><label>Funcionário vinculado (qualquer papel, quando também atuar como colaborador)</label><select id="nuFuncionario"><option value="">-- nenhum --</option>${funcionarios.filter(f=>f.ativo!==false).map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div><button class="btn gold" onclick="salvarUsuario()">Registrar usuário</button>
   </div>
   <div class="card"><h2>Usuários cadastrados</h2><table id="tbUsuarios"><tr><td>Carregando...</td></tr></table></div>`;
 }
@@ -721,7 +721,7 @@ async function carregarUsuarios(){
   const snap=await db.collection('usuarios').get();
   const tb=document.getElementById('tbUsuarios'); if(!tb)return;
   tb.innerHTML='<tr><th>ID</th><th>Nome</th><th>Papel</th><th>Status</th><th></th></tr>'+
-   snap.docs.map(d=>{const u=d.data();return `<tr><td>${d.id.slice(0,6)}</td><td>${u.nome}</td><td>${u.role}</td><td><span class="tag">${u.ativo===false?'DESATIVADO':'ATIVO'}</span></td><td><button class="btn ghost" style="margin:0 2px 2px 0;padding:3px 8px" onclick="editarPapelUsuario('${d.id}','${u.role||'colaborador'}')">papel</button><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="toggleUsuario('${d.id}',${u.ativo===false})">${u.ativo===false?'reativar':'desativar'}</button></td></tr>`}).join('');
+   snap.docs.map(d=>{const u=d.data();return `<tr><td>${d.id.slice(0,6)}</td><td>${u.nome}</td><td>${u.role}</td><td><span class="tag">${u.ativo===false?'DESATIVADO':'ATIVO'}</span></td><td><button class="btn ghost" style="margin:0 2px 2px 0;padding:3px 8px" onclick="editarPapelUsuario('${d.id}','${u.role||'colaborador'}')">papel</button><button class="btn ghost" style="margin:0 2px 2px 0;padding:3px 8px" onclick="editarVinculoUsuario('${d.id}','${u.funcionarioId||''}')">vínculo</button><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="toggleUsuario('${d.id}',${u.ativo===false})">${u.ativo===false?'reativar':'desativar'}</button></td></tr>`}).join('');
 }
 
 function editarPapelUsuario(uid,atual){
@@ -729,12 +729,21 @@ function editarPapelUsuario(uid,atual){
   const mapa={colaborador:'Colaborador',gestor:'Gestor',master:'Master/Sócio',comum:'Colaborador'};
   const novo=(prompt('Novo papel: colaborador, gestor ou master',atual==='comum'?'colaborador':atual)||'').trim().toLowerCase();
   if(!['colaborador','gestor','master'].includes(novo))return alert('Papel inválido.');
-  const upd={role:novo}; if(novo!=='colaborador')upd.funcionarioId=null;
+  const upd={role:novo};
   db.collection('usuarios').doc(uid).update(upd).then(carregarUsuarios);
 }
 function salvarUsuario(){
   const uid=nuUid.value.trim(); if(!uid)return;
-  db.collection('usuarios').doc(uid).set({nome:nuNome.value||'-',role:nuRole.value,ativo:true,funcionarioId:nuRole.value==='colaborador'?(nuFuncionario.value||null):null}).then(carregarUsuarios);
+  db.collection('usuarios').doc(uid).set({nome:nuNome.value||'-',role:nuRole.value,ativo:true,funcionarioId:nuFuncionario.value||null}).then(carregarUsuarios);
+}
+function editarVinculoUsuario(uid,atual){
+  if(!currentUser?.gerenciarUsuarios)return;
+  const opcoes=funcionarios.filter(f=>f.ativo!==false).map(f=>`${f.id} = ${f.nome}`).join('\n');
+  const novo=prompt('Funcionário vinculado. Informe o ID do funcionário ou deixe em branco para remover o vínculo:\n\n'+opcoes,atual||'');
+  if(novo===null)return;
+  const fid=novo.trim();
+  if(fid&&!funcionarios.some(f=>f.id===fid))return alert('ID de funcionário inválido.');
+  db.collection('usuarios').doc(uid).update({funcionarioId:fid||null}).then(()=>{carregarUsuarios();alert(fid?'Vínculo atualizado. O usuário deve sair e entrar novamente para carregar as abas pessoais.':'Vínculo removido.');});
 }
 function toggleUsuario(uid,ativar){
   db.collection('usuarios').doc(uid).update({ativo:ativar}).then(carregarUsuarios);
