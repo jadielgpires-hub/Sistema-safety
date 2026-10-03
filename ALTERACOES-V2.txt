@@ -1,0 +1,17 @@
+SAFETY EQUIPAMENTOS — SISTEMA INTERNO V2.0
+
+ALTERAÇÕES INCLUÍDAS
+- Interface refeita no padrão visual do Safety EPI V1.2 Final: login em painel, menu lateral, topbar, cards, tabelas e responsividade.
+- Favicon e identidade Safety (#073B73 / #D4A017).
+- Dashboard interativo preservado, com anos dinâmicos.
+- Obras encerradas deixam de aparecer em NOVOS lançamentos, gastos e escalas; histórico é preservado e existe ação Reabrir.
+- Pagamento integral de obra NÃO encerra automaticamente a obra.
+- Pesquisa de colaboradores dentro da seleção de equipe dos lançamentos.
+- Novas categorias em Gastos Indiretos: Serviços Terceirizados/Projetos/ART-RRT, Patrimônio/Equipamentos e Veículos/Manutenção.
+- Mantido controle de obrigação única em gastos parcelados: Total / Pago / Saldo.
+- Novo módulo Pagamentos aos Colaboradores: pagamento em qualquer data, baixa do saldo acumulado, histórico, recibo eletrônico e assinatura do colaborador.
+- Novo módulo Meus Pagamentos para colaborador: assinatura do recibo, geração do recibo e acesso ao link de comprovante PIX quando informado.
+- Regras de acesso preservadas: Master/Sócio opera módulos; Gestor somente Escalas (+ áreas pessoais se vinculado); Colaborador somente áreas pessoais; somente usuário autorizado por gerenciarUsuarios vê Usuários.
+
+OBSERVAÇÃO
+O arquivamento automático de comprovantes no OneDrive e a expiração automática do arquivo temporário exigem uma integração externa/autorização que não existe dentro deste site estático. Nesta V2 o pagamento aceita o link do comprovante já arquivado no OneDrive, mantendo o histórico no Firestore.

@@ -1,0 +1,12 @@
+TESTES RECOMENDADOS — SISTEMA INTERNO V2.0
+
+1. Login Master / Gestor / Colaborador e menus por perfil.
+2. Dashboard, F5 e anos dinâmicos.
+3. Obras: encerrar, confirmar sumiço das listas de novos lançamentos/gastos/escalas, reabrir e confirmar retorno.
+4. Lançamentos: pesquisar colaborador e marcar equipe.
+5. Gastos: testar Patrimônio/Equipamentos e Veículos/Manutenção, inclusive pagamento parcelado.
+6. Escalas: obra encerrada não aparece; conflito continua apenas como aviso.
+7. Pagamentos: registrar pagamento parcial, validar Total/Pago/Saldo.
+8. Entrar como colaborador, abrir Meus Pagamentos, assinar recibo e gerar PDF.
+9. Confirmar que Gestor continua apenas em Escalas (e áreas pessoais quando vinculado).
+10. Confirmar que apenas o administrador autorizado enxerga Usuários.

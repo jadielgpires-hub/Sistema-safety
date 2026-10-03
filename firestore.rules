@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function logged(){ return request.auth != null; }
+    function userPath(){ return /databases/$(database)/documents/usuarios/$(request.auth.uid); }
+    function hasUser(){ return logged() && exists(userPath()); }
+    function u(){ return get(userPath()).data; }
+    function active(){ return hasUser() && u().ativo != false; }
+    function role(){ return active() ? u().role : null; }
+    function master(){ return active() && role() == 'master'; }
+    function gestor(){ return active() && role() == 'gestor'; }
+    function manager(){ return master() || gestor(); }
+    function fid(){ return active() ? u().funcionarioId : null; }
+    function userAdmin(){ return active() && u().gerenciarUsuarios == true; }
+
+    match /usuarios/{uid} {
+      allow read: if active() && (request.auth.uid == uid || userAdmin());
+      allow create, update, delete: if userAdmin();
+    }
+    match /funcionarios/{id} {
+      allow read: if manager();
+      allow create, update: if master();
+      allow delete: if false;
+    }
+    match /obras/{id} {
+      allow read: if manager();
+      allow create, update: if master();
+      allow delete: if false;
+    }
+    match /escalas/{id} {
+      allow read: if manager() || (active() && fid() != null && resource.data.colabs.hasAny([fid()]));
+      allow create, update: if manager();
+      allow delete: if false;
+    }
+    match /lancamentos/{id} {
+      allow read, create, update: if master();
+      allow delete: if false;
+    }
+    match /gastos/{id} {
+      allow read, create, update: if master();
+      allow delete: if false;
+    }
+    match /faturamentos/{id} {
+      allow read, create, update: if master();
+      allow delete: if false;
+    }
+    match /registros_colaborador/{id} {
+      allow read: if master() || (active() && fid() != null && resource.data.funcionarioId == fid());
+      allow create, update: if master();
+      allow delete: if master();
+    }
+    match /pagamentos_colaborador/{id} {
+      allow read: if master() || (active() && fid() != null && resource.data.funcionarioId == fid());
+      allow create: if master();
+      allow update: if master() || (active() && fid() != null && resource.data.funcionarioId == fid() && request.resource.data.funcionarioId == resource.data.funcionarioId && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['assinatura','assinadoEm','status','alteradoEm']));
+      allow delete: if false;
+    }
+    match /auditoria/{id} {
+      allow create: if active();
+      allow read: if master();
+      allow update, delete: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
