@@ -24,10 +24,10 @@
 label{font-size:12px;color:#314154;display:block;margin-top:9px;font-weight:700}input,select,textarea{width:100%;min-height:42px;padding:0 12px;border:1px solid #ccd6e1;border-radius:10px;font-size:13px;margin-top:4px;background:#fff;outline:none}textarea{padding:10px 12px}input:focus,select:focus,textarea:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(11,77,145,.1)}.row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:160px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.chk{display:flex;align-items:center;gap:8px;font-size:12px;padding:7px 8px;border-radius:8px}.chk:hover{background:#f5f7fa}.chk input{width:16px;height:16px;min-height:0;margin:0}.check-search{margin:6px 0 8px}.check-list-box{max-height:235px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px;background:#fff}
 .table-wrap,.card{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;min-width:760px}th{text-align:left;padding:11px 12px;background:#f2f5f8;color:#4c5d6e;font-size:10px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}td{text-align:left;padding:11px 12px;border-bottom:1px solid #edf0f3;vertical-align:middle}tr:hover td{background:#fbfcfd}.btn{border:0;border-radius:9px;min-height:40px;padding:0 14px;font-size:12px;font-weight:800;cursor:pointer;margin-top:10px;background:var(--blue);color:#fff}.btn:hover{filter:brightness(.96)}.btn.gold{background:var(--blue);color:#fff}.btn.ghost{background:#eef3f8;color:var(--blue);border:0}.tag{display:inline-flex;font-size:10px;padding:4px 8px;border-radius:999px;background:#eaf2fb;color:var(--blue);font-weight:750}.tag.ok{background:#eaf8f1;color:#13704a}.tag.warn{background:#fff6dc;color:#886000}.tag.danger{background:#fff0ee;color:#a43026}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:16px 0}.kpi{border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff}.kpi .v{font-size:26px;font-weight:900;color:var(--blue);margin-top:15px}.kpi .l{font-size:11px;color:#526171;font-weight:800}.chartBox{height:280px;position:relative;margin-top:16px}.chartBox canvas{width:100%;height:100%}
-.notice{padding:13px 14px;border-left:3px solid var(--gold);background:var(--goldsoft);border-radius:9px;color:#795600;font-size:11px}.payment-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0}.payment-summary>div{padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8fafc}.payment-summary span{display:block;font-size:10px;color:var(--muted);text-transform:uppercase}.payment-summary strong{display:block;margin-top:7px;color:var(--blue);font-size:20px}.payment-link{word-break:break-all}.modal-sign{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px;background:#10263d99}.modal-sign-card{width:min(620px,100%);background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 28px 70px #0004}.modal-sign-head,.modal-sign-foot{padding:16px 20px;border-bottom:1px solid var(--line)}.modal-sign-head h3{margin:0;color:var(--blue)}.modal-sign-body{padding:20px}.modal-sign-foot{border-top:1px solid var(--line);border-bottom:0;display:flex;justify-content:flex-end;gap:8px}.signature-canvas{display:block;width:100%;height:220px;border:1px solid var(--line);border-radius:12px;background:#fff;touch-action:none}
+.notice{padding:13px 14px;border-left:3px solid var(--gold);background:var(--goldsoft);border-radius:9px;color:#795600;font-size:11px}.payment-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:12px 0}.payment-summary>div{padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8fafc}.payment-summary span{display:block;font-size:10px;color:var(--muted);text-transform:uppercase}.payment-summary strong{display:block;margin-top:7px;color:var(--blue);font-size:20px}.payment-link{word-break:break-all}.modal-sign{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px;background:#10263d99}.modal-sign-card{width:min(620px,100%);background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 28px 70px #0004}.modal-sign-head,.modal-sign-foot{padding:16px 20px;border-bottom:1px solid var(--line)}.modal-sign-head h3{margin:0;color:var(--blue)}.modal-sign-body{padding:20px}.modal-sign-foot{border-top:1px solid var(--line);border-bottom:0;display:flex;justify-content:flex-end;gap:8px}.signature-canvas{display:block;width:100%;height:220px;border:1px solid var(--line);border-radius:12px;background:#fff;touch-action:none}.audit-toolbar{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:10px;align-items:end}.audit-summary{white-space:normal;min-width:260px}.tag.info{background:#eef3f8;color:#42566b}
 /* print */
 .printArea{display:none}@page{size:A4;margin:10mm 12mm 14mm 12mm;@bottom-right{content:"PÁG. " counter(page);font:bold 8pt Arial,sans-serif;color:#6b7280}}@media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}#printArea{font-family:Arial,Helvetica,sans-serif;color:#0b2a4a;font-size:10pt}#printArea table.pg{width:100%;border-collapse:collapse;height:258mm}#printArea table.pg>thead>tr>td,#printArea table.pg>tbody>tr>td,#printArea table.pg>tfoot>tr>td{padding:0;border:0}#printArea table.pg>thead,#printArea table.pg>tfoot{display:table-header-group}#printArea table.pg>tfoot{display:table-footer-group}.tb{width:100%;border-collapse:collapse;margin:3mm 0;font-size:8.5pt}.tb th{background:#eaf2fb;color:#073B73;text-align:left;padding:5px 6px;font-size:7.5pt;text-transform:uppercase}.tb td{padding:4px 6px;border-bottom:1px solid #d9e0ec}.tb .r{text-align:right}.tb tr.grp td{font-weight:bold;color:#073B73;background:#f7f9fd}.tb tr.sub td{background:#f7f9fd;font-size:8pt}.tb tr.tot td{font-weight:bold;background:#eef3fa;border-top:2px solid #073B73}.tb tr{page-break-inside:avoid}.doc{border:1px solid var(--line);padding:0;font-size:12px}.doc .top{background:var(--blue);color:#fff;padding:14px;position:relative}.doc .top .goldbar{position:absolute;bottom:0;left:0;right:0;height:5px;background:var(--gold)}.doc .body{padding:16px}.doc table{margin-top:10px}.sig{margin-top:50px;text-align:center}.sig .line{border-top:1px solid #333;width:220px;margin:0 auto 4px}
-@media(max-width:1180px){.kpis{grid-template-columns:repeat(2,1fr)}}@media(max-width:900px){.login-shell{grid-template-columns:1fr;min-height:0}.login-brand-panel{display:none}.login-form-panel{padding:42px 28px;min-height:100vh}.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}.app-main{margin-left:0}.menu-toggle{display:block}.sidebar-backdrop.open{display:block;position:fixed;inset:0;background:#10263d77;z-index:90}.topbar{padding:0 14px}.user-meta{display:none}#main{padding:20px 14px 50px}.grid2{grid-template-columns:1fr}.payment-summary{grid-template-columns:1fr}.row>div{min-width:140px}}@media(max-width:600px){#login{padding:0}.login-form-panel{padding:34px 24px}.kpis{grid-template-columns:1fr}.topbar h1{font-size:19px}.year-select{max-width:95px}.card{padding:17px 16px;border-radius:14px}.btn{min-height:38px}.modal-sign{padding:0}.modal-sign-card{width:100%;height:100%;border-radius:0}.signature-canvas{height:260px}}
+@media(max-width:1180px){.kpis{grid-template-columns:repeat(2,1fr)}.audit-toolbar{grid-template-columns:repeat(2,1fr)}}@media(max-width:900px){.audit-toolbar{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr;min-height:0}.login-brand-panel{display:none}.login-form-panel{padding:42px 28px;min-height:100vh}.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}.app-main{margin-left:0}.menu-toggle{display:block}.sidebar-backdrop.open{display:block;position:fixed;inset:0;background:#10263d77;z-index:90}.topbar{padding:0 14px}.user-meta{display:none}#main{padding:20px 14px 50px}.grid2{grid-template-columns:1fr}.payment-summary{grid-template-columns:1fr}.row>div{min-width:140px}}@media(max-width:600px){#login{padding:0}.login-form-panel{padding:34px 24px}.kpis{grid-template-columns:1fr}.topbar h1{font-size:19px}.year-select{max-width:95px}.card{padding:17px 16px;border-radius:14px}.btn{min-height:38px}.modal-sign{padding:0}.modal-sign-card{width:100%;height:100%;border-radius:0}.signature-canvas{height:260px}}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
@@ -58,35 +58,128 @@ firebase.initializeApp({
   messagingSenderId:"504587541694", appId:"1:504587541694:web:1812febffa6e00cff892ef"
 });
 const auth=firebase.auth(), db=firebase.firestore();
-let currentUser=null;
-function fazerLogin(){
+const authPersistenceReady=auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>null);
+let currentUser=null, loginManualEmAndamento=false, sessaoCarregando=false;
+
+function nomeModuloAuditoria(colecao){
+  return ({sistema:'Sistema',usuarios:'Usuários',funcionarios:'Funcionários',obras:'Obras',escalas:'Escalas',lancamentos:'Lançamentos',gastos:'Gastos Indiretos',faturamentos:'Faturamentos',pagamentos_colaborador:'Pagamentos',registros_colaborador:'Histórico do colaborador'})[colecao]||colecao||'Sistema';
+}
+function snapshotAuditoria(valor){
+  if(valor===undefined||valor===null)return null;
+  try{
+    const limpa=(v,chave='')=>{
+      if(v===null||v===undefined)return v;
+      if(typeof v==='string'){
+        if(/assinatura/i.test(chave))return '[assinatura omitida]';
+        return v.length>1500?v.slice(0,1500)+'…':v;
+      }
+      if(Array.isArray(v))return v.slice(0,50).map(x=>limpa(x));
+      if(typeof v==='object'){
+        const o={};
+        Object.keys(v).slice(0,80).forEach(k=>o[k]=limpa(v[k],k));
+        return o;
+      }
+      return v;
+    };
+    return limpa(JSON.parse(JSON.stringify(valor)));
+  }catch(e){return null}
+}
+function textoAuditoria(v){
+  if(v===true)return 'sim'; if(v===false)return 'não'; if(v===null||v===undefined||v==='')return '—';
+  if(Array.isArray(v))return v.join(', ');
+  if(typeof v==='object')return JSON.stringify(v);
+  return String(v);
+}
+function resumoAlteracoesAuditoria(antes,depois,acao){
+  const rotulo=(depois&&((depois.nome||depois.desc||depois.descricao||depois.referencia||depois.obraNome)))||(antes&&((antes.nome||antes.desc||antes.descricao||antes.referencia||antes.obraNome)))||'';
+  if(!antes)return rotulo?`Registro ${acao||'criado'}: ${rotulo}`:`Registro ${acao||'criado'}.`;
+  if(!depois)return rotulo?`Registro ${acao||'alterado'}: ${rotulo}`:`Registro ${acao||'alterado'}.`;
+  const ignorar=new Set(['alteradoEm','alteradoPor','criadoEm','criadoPor','assinatura']);
+  const ks=[...new Set([...Object.keys(antes||{}),...Object.keys(depois||{})])];
+  const mudancas=[];
+  for(const k of ks){
+    if(ignorar.has(k))continue;
+    const a=antes?.[k], d=depois?.[k];
+    if((typeof a==='object'&&a!==null)||(typeof d==='object'&&d!==null))continue;
+    if(JSON.stringify(a)!==JSON.stringify(d))mudancas.push(`${k}: ${textoAuditoria(a)} → ${textoAuditoria(d)}`);
+    if(mudancas.length>=5)break;
+  }
+  const prefixo=rotulo?`${rotulo} · `:'';
+  return prefixo+(mudancas.length?mudancas.join(' | '):`Registro ${acao||'alterado'}.`);
+}
+async function registrarAuditoriaEvento(acao,colecao='sistema',itemId='sessao',depois=null,antes=null,resumoExtra=''){
+  if(!currentUser)return;
+  const em=new Date().toISOString(), antesLimpo=snapshotAuditoria(antes), depoisLimpo=snapshotAuditoria(depois);
+  const doc={
+    colecao,modulo:nomeModuloAuditoria(colecao),itemId:itemId||'',
+    acao:acao||'evento',uid:currentUser.uid,nome:currentUser.nome,
+    perfil:currentUser.role||'',em,
+    resumo:resumoExtra||resumoAlteracoesAuditoria(antesLimpo,depoisLimpo,acao)
+  };
+  if(antesLimpo)doc.antes=JSON.stringify(antesLimpo);
+  if(depoisLimpo)doc.depois=JSON.stringify(depoisLimpo);
+  try{await db.collection('auditoria').add(doc)}catch(e){console.warn('Auditoria não registrada:',e.message)}
+}
+async function ativarSessao(firebaseUser,registrarLogin=false){
+  if(!firebaseUser||sessaoCarregando)return;
+  sessaoCarregando=true;
+  const msg=document.getElementById('msgLogin');
+  try{
+    if(msg)msg.textContent='Carregando dados...';
+    const doc=await db.collection('usuarios').doc(firebaseUser.uid).get();
+    if(!doc.exists){
+      if(msg)msg.textContent='Login sem cadastro de permissões. Peça ao administrador para registrar o usuário.';
+      await auth.signOut(); return;
+    }
+    const d=doc.data();
+    if(d.ativo===false){
+      if(msg)msg.textContent='Acesso desativado. Fale com o administrador.';
+      await auth.signOut(); return;
+    }
+    const nomeUsuario=d.nome||firebaseUser.email;
+    let role=d.role||'colaborador'; if(role==='comum')role='colaborador';
+    const bootstrapAdmin=/^jadiel\s+pires$/i.test((nomeUsuario||'').trim());
+    currentUser={uid:firebaseUser.uid,email:firebaseUser.email,nome:nomeUsuario,role,funcionarioId:d.funcionarioId||null,gerenciarUsuarios:d.gerenciarUsuarios===true||bootstrapAdmin};
+    if(bootstrapAdmin&&d.gerenciarUsuarios!==true){
+      try{await db.collection('usuarios').doc(firebaseUser.uid).update({gerenciarUsuarios:true})}catch(e){console.warn('Não foi possível gravar permissão administrativa automática:',e.message)}
+    }
+    await carregarDados();
+    document.getElementById('login').style.display='none';
+    renderNav(); render();
+    if(registrarLogin)await registrarAuditoriaEvento('login','sistema','sessao',null,null,'Login realizado no Sistema Interno.');
+    if(msg)msg.textContent='';
+  }catch(e){
+    currentUser=null;
+    if(msg)msg.textContent='Não foi possível carregar sua sessão: '+e.message;
+  }finally{sessaoCarregando=false}
+}
+async function fazerLogin(){
   const email=document.getElementById('u').value.trim(), senha=document.getElementById('p').value;
   const msg=document.getElementById('msgLogin'); msg.textContent='Entrando...';
-  auth.signInWithEmailAndPassword(email,senha).then(async cred=>{
-    const doc=await db.collection('usuarios').doc(cred.user.uid).get();
-    if(!doc.exists){msg.textContent='Login sem cadastro de permissões. Peça ao master pra te registrar na aba Usuários.';auth.signOut();return}
-    const d=doc.data();
-    if(d.ativo===false){msg.textContent='Acesso desativado. Fale com o administrador.';auth.signOut();return}
-    const nomeUsuario=d.nome||cred.user.email;
-    let role=d.role||'colaborador'; if(role==='comum')role='colaborador';
-    const bootstrapAdmin=/^jadiel\s+pires$/i.test(nomeUsuario.trim());
-    currentUser={uid:cred.user.uid,email:cred.user.email,nome:nomeUsuario,role,funcionarioId:d.funcionarioId||null,gerenciarUsuarios:d.gerenciarUsuarios===true||bootstrapAdmin};
-    if(bootstrapAdmin&&d.gerenciarUsuarios!==true) await db.collection('usuarios').doc(cred.user.uid).update({gerenciarUsuarios:true});
-    msg.textContent='Carregando dados...'; await carregarDados(); document.getElementById('login').style.display='none'; renderNav(); render();
-  }).catch(()=>{msg.textContent='E-mail ou senha inválidos.'});
+  loginManualEmAndamento=true;
+  try{
+    await authPersistenceReady;
+    const cred=await auth.signInWithEmailAndPassword(email,senha);
+    await ativarSessao(cred.user,true);
+  }catch(e){msg.textContent='E-mail ou senha inválidos.'}
+  finally{loginManualEmAndamento=false}
 }
 function enviarRecuperacao(){
   const email=document.getElementById('eRecuperar').value.trim(); const msg=document.getElementById('msgRecuperar');
   if(!email){msg.textContent='Informe um e-mail.';return}
   auth.sendPasswordResetEmail(email).finally(()=>{msg.textContent='Se este e-mail estiver cadastrado, um link de redefinição foi enviado.'});
 }
-function persistir(colecao,item,acao,antes){
+async function persistir(colecao,item,acao,antes){
   const agora=new Date().toISOString(), novo=!item.criadoPor;
   if(!item.id) item.id=db.collection(colecao).doc().id;
   if(novo){item.criadoPor=currentUser.uid;item.criadoEm=agora;}
   item.alteradoPor=currentUser.uid; item.alteradoEm=agora;
-  db.collection('auditoria').add({colecao,itemId:item.id,acao:acao||(novo?'criado':'alterado'),uid:currentUser.uid,nome:currentUser.nome,em:agora,...(antes?{antes:JSON.stringify(antes)}:{})});
-  return db.collection(colecao).doc(item.id).set(JSON.parse(JSON.stringify(item))).catch(e=>alert('Erro ao salvar: '+e.message));
+  const salvo=JSON.parse(JSON.stringify(item));
+  try{
+    await db.collection(colecao).doc(item.id).set(salvo);
+    await registrarAuditoriaEvento(acao||(novo?'criado':'alterado'),colecao,item.id,salvo,antes);
+    return item;
+  }catch(e){alert('Erro ao salvar: '+e.message);throw e}
 }
 async function carregarDados(){
   try{
@@ -100,25 +193,49 @@ async function carregarDados(){
         await Promise.all([ler('funcionarios',funcionarios),ler('obras',obras),ler('escalas',escalas),ler('lancamentos',lancamentos),ler('gastos',gastosIndiretos),ler('faturamentos',faturamentos),ler('pagamentos_colaborador',pagamentosColaborador)]);
       }
     } else {
-      // Colaborador recebe somente documentos de escala que contêm seu ID. Não baixa cadastros gerais.
       funcionarios.length=0; obras.length=0; lancamentos.length=0; gastosIndiretos.length=0; faturamentos.length=0; escalas.length=0; pagamentosColaborador.length=0;
-      if(currentUser.funcionarioId){const [se,sp]=await Promise.all([db.collection('escalas').where('colabs','array-contains',currentUser.funcionarioId).get(),db.collection('pagamentos_colaborador').where('funcionarioId','==',currentUser.funcionarioId).get()]);se.docs.forEach(d=>escalas.push({...d.data(),id:d.id}));sp.docs.forEach(d=>pagamentosColaborador.push({...d.data(),id:d.id}));}
+      if(currentUser.funcionarioId){
+        const [se,sp]=await Promise.all([
+          db.collection('escalas').where('colabs','array-contains',currentUser.funcionarioId).get(),
+          db.collection('pagamentos_colaborador').where('funcionarioId','==',currentUser.funcionarioId).get()
+        ]);
+        se.docs.forEach(d=>escalas.push({...d.data(),id:d.id}));
+        sp.docs.forEach(d=>pagamentosColaborador.push({...d.data(),id:d.id}));
+      }
     }
     const porId=(a,b)=>a.id.localeCompare(b.id), porData=(a,b)=>(a.data||'').localeCompare(b.data||'');
     funcionarios.sort(porId); obras.sort(porId); escalas.sort(porData); lancamentos.sort(porData); gastosIndiretos.sort(porData);
-    if(role==='master'&&!obras.some(o=>o.tipo==='Administrativo')){const adm={id:'ADM',nome:'ADMINISTRATIVO',endereco:'',cnpj:'',segmento:'',tipo:'Administrativo',valor:null,responsaveis:[]};obras.push(adm);await persistir('obras',adm);}
-     atualizarAnos();
+    if(role==='master'&&!obras.some(o=>o.tipo==='Administrativo')){
+      const adm={id:'ADM',nome:'ADMINISTRATIVO',endereco:'',cnpj:'',segmento:'',tipo:'Administrativo',valor:null,responsaveis:[]};
+      obras.push(adm); await persistir('obras',adm);
+    }
+    atualizarAnos();
   }catch(e){alert('Erro ao carregar dados: '+e.message)}
 }
-
-function sair(){currentUser=null;auth.signOut();document.getElementById('login').style.display='flex';document.getElementById('u').value='';document.getElementById('p').value='';}
+function mostrarLogin(){
+  const login=document.getElementById('login'); if(login)login.style.display='grid';
+  const u=document.getElementById('u'),p=document.getElementById('p'); if(u)u.value=''; if(p)p.value='';
+}
+async function sair(){
+  try{if(currentUser)await registrarAuditoriaEvento('logout','sistema','sessao',null,null,'Logout realizado no Sistema Interno.')}catch(e){}
+  currentUser=null;
+  await auth.signOut();
+  mostrarLogin();
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  auth.onAuthStateChanged(async user=>{
+    if(loginManualEmAndamento||sessaoCarregando)return;
+    if(user)await ativarSessao(user,false);
+    else if(!currentUser)mostrarLogin();
+  });
+});
 </script>
 
 <div id="appShell">
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-brand"><img id="headerLogo" alt="Safety Equipamentos"><div><strong>Safety Interno</strong><span>Gestão Operacional</span></div></div>
     <nav id="nav"></nav>
-    <div class="sidebar-footer">V2.0 — Interface Safety</div>
+    <div class="sidebar-footer">V2.1 FINAL — Interface Safety</div>
   </aside>
   <div id="sidebarBackdrop" class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
   <div class="app-main">
@@ -142,6 +259,7 @@ const categoriasGasto=['Obra Direto (Material)','Obra Direto (Visita Técnica)',
 let faturamentos=[];
 let escalas=[];
 let pagamentosColaborador=[];
+let auditoriaRegistros=[];
 let anoAtual=new Date().getFullYear();
 function anosDisponiveis(){
   const ys=new Set([new Date().getFullYear()]);
@@ -191,14 +309,14 @@ let active='Dashboard';
 function tabsVisiveis(){
   if(!currentUser)return [];
   const pessoais=currentUser.funcionarioId?[...tabsColaborador]:[];
-  if(currentUser.role==='master')return currentUser.gerenciarUsuarios?[...tabsMaster,...pessoais,'Usuários']:[...tabsMaster,...pessoais];
+  if(currentUser.role==='master')return currentUser.gerenciarUsuarios?[...tabsMaster,...pessoais,'Auditoria','Usuários']:[...tabsMaster,...pessoais];
   if(currentUser.role==='gestor')return [...tabsGestor,...pessoais];
   return tabsColaborador;
 }
 function nomeF(id){return funcionarios.find(f=>f.id===id)?.nome||id}
 function nomeO(id){return obras.find(o=>o.id===id)?.nome||id}
 
-const NAV_ICONS={'Dashboard':'⌂','Funcionários':'●','Obras':'■','Escalas':'✓','Minha Escala':'✓','Meu Histórico':'≡','Meus Pagamentos':'$','Lançamentos':'⇄','Atendimentos':'◇','Gastos Indiretos':'▤','Pagamentos':'$','Recibos':'▣','Usuários':'⚙'};
+const NAV_ICONS={'Dashboard':'⌂','Funcionários':'●','Obras':'■','Escalas':'✓','Minha Escala':'✓','Meu Histórico':'≡','Meus Pagamentos':'$','Lançamentos':'⇄','Atendimentos':'◇','Gastos Indiretos':'▤','Pagamentos':'$','Recibos':'▣','Auditoria':'◎','Usuários':'⚙'};
 function renderNav(){
   const tv=tabsVisiveis(); if(tv.length&&!tv.includes(active))active=tv[0];
   document.getElementById('nav').innerHTML=tv.map(t=>`<button class="nav-item ${t===active?'active':''}" onclick="setTab('${t}')"><span class="nav-icon">${NAV_ICONS[t]||'•'}</span><span>${t}</span></button>`).join('');
@@ -210,7 +328,7 @@ function renderNav(){
   }
   const pt=document.getElementById('pageTitle');if(pt)pt.textContent=active;
 }
-function setTab(t){active=t;renderNav();render();toggleSidebar(false);window.scrollTo(0,0)}
+function setTab(t){active=t;renderNav();render();toggleSidebar(false);window.scrollTo(0,0);if(t==='Auditoria'&&currentUser?.gerenciarUsuarios)carregarAuditoria().then(()=>{if(active==='Auditoria')render()});}
 function toggleSidebar(force){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebarBackdrop');if(!sb)return;const open=force===undefined?!sb.classList.contains('open'):!!force;sb.classList.toggle('open',open);if(bd)bd.classList.toggle('open',open)}
 
 function render(){
@@ -227,11 +345,13 @@ function render(){
   if(active==='Meus Pagamentos') m.innerHTML=viewMeusPagamentos();
   if(active==='Recibos') m.innerHTML=viewRecibos();
   if(active==='Dashboard') m.innerHTML=viewDashboard();
+  if(active==='Auditoria') m.innerHTML=currentUser?.gerenciarUsuarios?viewAuditoria():'<div class="card"><h2>Acesso restrito</h2><p>Somente o administrador do sistema pode acessar a auditoria.</p></div>';
   if(active==='Usuários') m.innerHTML=currentUser?.gerenciarUsuarios?viewUsuarios():'<div class="card"><h2>Acesso restrito</h2><p>Somente o administrador de usuários pode acessar esta página.</p></div>';
   if(active==='Funcionários')filtroF('');
   if(active==='Obras')filtroO('');
   if(active==='Lançamentos'){renderColabs();renderDiarias();renderListaLanc();}
-  if(active==='Pagamentos')setTimeout(atualizarResumoPagamento,0);
+  if(active==='Pagamentos')setTimeout(()=>{atualizarResumoPagamento();atualizarCamposPagamento()},0);
+  if(active==='Auditoria')setTimeout(renderListaAuditoria,0);
 }
 
 // ---------- Funcionários ----------
@@ -579,15 +699,26 @@ function salvarLancamento(){
 // ---------- Escalas ----------
 let editandoEscalaId=null;
 function equipeChecks(selecionados=[]){
- return funcionarios.filter(f=>f.ativo!==false||selecionados.includes(f.id)).map(f=>`<label class="chk"><input type="checkbox" class="eColab" value="${f.id}" ${selecionados.includes(f.id)?'checked':''}> ${f.nome}</label>`).join('');
+ return funcionarios
+  .filter(f=>f.ativo!==false||selecionados.includes(f.id))
+  .slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'))
+  .map(f=>`<label class="chk" data-nome="${(f.nome+' '+f.id+' '+(f.funcao||'')).toLowerCase()}"><input type="checkbox" class="eColab" value="${f.id}" ${selecionados.includes(f.id)?'checked':''}> ${f.nome}${f.ativo===false?' (desligado)':''}</label>`).join('');
+}
+function filtrarEquipeEscala(q){
+ q=(q||'').trim().toLowerCase();
+ document.querySelectorAll('#listaEquipeEscala .chk').forEach(el=>el.style.display=!q||el.dataset.nome.includes(q)?'flex':'none');
 }
 function viewEscalas(){
- const lista=escalas.slice().sort((a,b)=>(b.data+b.inicio).localeCompare(a.data+a.inicio));
+ const lista=escalas.slice().sort((a,b)=>(b.data+(b.inicio||'')).localeCompare(a.data+(a.inicio||'')));
+ const atual=editandoEscalaId?escalas.find(e=>e.id===editandoEscalaId):null, selecionados=atual?.colabs||[];
  return `<div class="card"><h2>${editandoEscalaId?'Editar':'Nova'} escala</h2>
-  <div class="row"><div><label>Data</label><input type="date" id="eData" value="${hoje()}"></div><div><label>Obra/Cliente</label><select id="eObra">${obras.filter(o=>o.tipo!=='Administrativo'&&(statusObra(o)!=='encerrada'||(editandoEscalaId&&escalas.find(e=>e.id===editandoEscalaId)?.obra===o.id))).map(o=>`<option value="${o.id}">${o.nome}${statusObra(o)==='nao_iniciada'?' — não iniciada':''}</option>`).join('')}</select></div></div>
-  <div class="row"><div><label>Início</label><input type="time" id="eInicio"></div><div><label>Fim</label><input type="time" id="eFim"></div></div>
-  <label>Serviço / orientação</label><input id="eServico" placeholder="Ex.: instalação de tela / acesso pela portaria principal">
-  <label>Equipe prevista</label><div id="eEquipe">${equipeChecks()}</div>
+  <div class="row"><div><label>Data</label><input type="date" id="eData" value="${atual?.data||hoje()}"></div><div><label>Obra/Cliente</label><select id="eObra">${obras.filter(o=>o.tipo!=='Administrativo'&&(statusObra(o)!=='encerrada'||atual?.obra===o.id)).map(o=>`<option value="${o.id}" ${atual?.obra===o.id?'selected':''}>${o.nome}${statusObra(o)==='nao_iniciada'?' — não iniciada':''}</option>`).join('')}</select></div></div>
+  <div class="row"><div><label>Início</label><input type="time" id="eInicio" value="${atual?.inicio||''}"></div><div><label>Fim</label><input type="time" id="eFim" value="${atual?.fim||''}"></div></div>
+  <label>Serviço / orientação</label><input id="eServico" value="${String(atual?.servico||'').replace(/"/g,'&quot;')}" placeholder="Ex.: instalação de tela / acesso pela portaria principal">
+  <label>Equipe prevista</label>
+  <input class="check-search" id="buscaEquipeEscala" placeholder="Pesquisar colaborador..." oninput="filtrarEquipeEscala(this.value)">
+  <div id="listaEquipeEscala" class="check-list-box">${equipeChecks(selecionados)}</div>
+  <p class="hint">A pesquisa não remove os colaboradores já marcados. A lista mostra colaboradores ativos em ordem alfabética.</p>
   <button class="btn gold" onclick="salvarEscala()">${editandoEscalaId?'Salvar alteração':'Salvar escala'}</button>${editandoEscalaId?'<button class="btn ghost" onclick="editandoEscalaId=null;render()">Cancelar</button>':''}
   <p class="hint">A escala é planejamento. Ela não gera diária nem pagamento automaticamente.</p></div>
   <div class="card"><h2>Escalas registradas</h2><table><thead><tr><th>Data</th><th>Obra</th><th>Horário</th><th>Equipe</th><th></th></tr></thead><tbody>${lista.map(e=>`<tr style="${e.cancelada?'opacity:.5':''}"><td>${dataBR(e.data)}</td><td>${nomeO(e.obra)}</td><td>${e.inicio||'-'}–${e.fim||'-'}</td><td>${(e.colabs||[]).map(nomeF).join(', ')}</td><td>${e.cancelada?'<span class="tag">CANCELADA</span>':`<button class="btn ghost" style="margin:0;padding:3px 8px" onclick="editarEscala('${e.id}')">editar</button> <button class="btn ghost" style="margin:0;padding:3px 8px" onclick="cancelarEscala('${e.id}')">cancelar</button>`}</td></tr>`).join('')||'<tr><td colspan="5">Nenhuma escala registrada.</td></tr>'}</tbody></table></div>`;
@@ -596,18 +727,13 @@ function salvarEscala(){
  const colabs=[...document.querySelectorAll('.eColab:checked')].map(x=>x.value); if(!colabs.length)return alert('Selecione ao menos um colaborador.');
  const obraEscala=obras.find(o=>o.id===eObra.value); if(!editandoEscalaId&&obraEscala&&statusObra(obraEscala)==='encerrada')return alert('Esta obra está encerrada e não aceita nova escala.');
  const dados={data:eData.value,obra:eObra.value,obraNome:nomeO(eObra.value),inicio:eInicio.value,fim:eFim.value,servico:eServico.value.trim(),colabs,cancelada:false};
- // Aviso de conflito objetivo, sem bloquear a decisão do gestor.
- const conflitos=escalas.filter(e=>!e.cancelada&&e.id!==editandoEscalaId&&e.data===dados.data&&e.colabs.some(id=>colabs.includes(id))&&(!dados.inicio||!dados.fim||!e.inicio||!e.fim||(dados.inicio<e.fim&&dados.fim>e.inicio)));
+ const conflitos=escalas.filter(e=>!e.cancelada&&e.id!==editandoEscalaId&&e.data===dados.data&&(e.colabs||[]).some(id=>colabs.includes(id))&&(!dados.inicio||!dados.fim||!e.inicio||!e.fim||(dados.inicio<e.fim&&dados.fim>e.inicio)));
  if(conflitos.length&&!confirm('Atenção: há colaborador(es) já escalado(s) nesse período. Deseja salvar mesmo assim?'))return;
- if(editandoEscalaId){const e=escalas.find(x=>x.id===editandoEscalaId),antes=JSON.parse(JSON.stringify(e));Object.assign(e,dados);persistir('escalas',e,'corrigido',antes);editandoEscalaId=null;}
+ if(editandoEscalaId){const escala=escalas.find(x=>x.id===editandoEscalaId),antes=JSON.parse(JSON.stringify(escala));Object.assign(escala,dados);persistir('escalas',escala,'corrigido',antes);editandoEscalaId=null;}
  else {escalas.push(dados);persistir('escalas',dados);}
  render();
 }
-function editarEscala(id){
- const e=escalas.find(x=>x.id===id); editandoEscalaId=id; render();
- eData.value=e.data;eObra.value=e.obra;eInicio.value=e.inicio||'';eFim.value=e.fim||'';eServico.value=e.servico||'';
- document.getElementById('eEquipe').innerHTML=equipeChecks(e.colabs||[]); window.scrollTo(0,0);
-}
+function editarEscala(id){editandoEscalaId=id;render();window.scrollTo(0,0);}
 function cancelarEscala(id){const e=escalas.find(x=>x.id===id);if(!confirm('Cancelar esta escala? O histórico será preservado.'))return;const antes=JSON.parse(JSON.stringify(e));e.cancelada=true;persistir('escalas',e,'cancelado',antes);render();}
 function viewMinhaEscala(){
  const fid=currentUser?.funcionarioId; if(!fid)return '<div class="card"><h2>Minha Escala</h2><p>Seu login ainda não está vinculado ao seu cadastro de funcionário. Procure um administrador.</p></div>';
@@ -724,58 +850,182 @@ async function carregarUsuarios(){
    snap.docs.map(d=>{const u=d.data();return `<tr><td>${d.id.slice(0,6)}</td><td>${u.nome}</td><td>${u.role}</td><td><span class="tag">${u.ativo===false?'DESATIVADO':'ATIVO'}</span></td><td><button class="btn ghost" style="margin:0 2px 2px 0;padding:3px 8px" onclick="editarPapelUsuario('${d.id}','${u.role||'colaborador'}')">papel</button><button class="btn ghost" style="margin:0 2px 2px 0;padding:3px 8px" onclick="editarVinculoUsuario('${d.id}','${u.funcionarioId||''}')">vínculo</button><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="toggleUsuario('${d.id}',${u.ativo===false})">${u.ativo===false?'reativar':'desativar'}</button></td></tr>`}).join('');
 }
 
-function editarPapelUsuario(uid,atual){
+async function editarPapelUsuario(uid,atual){
   if(!currentUser?.gerenciarUsuarios)return;
-  const mapa={colaborador:'Colaborador',gestor:'Gestor',master:'Master/Sócio',comum:'Colaborador'};
   const novo=(prompt('Novo papel: colaborador, gestor ou master',atual==='comum'?'colaborador':atual)||'').trim().toLowerCase();
   if(!['colaborador','gestor','master'].includes(novo))return alert('Papel inválido.');
-  const upd={role:novo};
-  db.collection('usuarios').doc(uid).update(upd).then(carregarUsuarios);
+  const ref=db.collection('usuarios').doc(uid), snap=await ref.get(), antes=snap.exists?snap.data():{};
+  await ref.update({role:novo});
+  await registrarAuditoriaEvento('papel_alterado','usuarios',uid,{...antes,role:novo},antes,`Papel de usuário alterado: ${antes.role||'—'} → ${novo}.`);
+  carregarUsuarios();
 }
-function salvarUsuario(){
+async function salvarUsuario(){
   const uid=nuUid.value.trim(); if(!uid)return;
-  db.collection('usuarios').doc(uid).set({nome:nuNome.value||'-',role:nuRole.value,ativo:true,funcionarioId:nuFuncionario.value||null}).then(carregarUsuarios);
+  const ref=db.collection('usuarios').doc(uid), snap=await ref.get(), antes=snap.exists?snap.data():null;
+  const dados={nome:nuNome.value||'-',role:nuRole.value,ativo:true,funcionarioId:nuFuncionario.value||null};
+  await ref.set(dados);
+  await registrarAuditoriaEvento(antes?'usuario_alterado':'usuario_criado','usuarios',uid,dados,antes,`${antes?'Cadastro de usuário atualizado':'Usuário registrado'}: ${dados.nome}.`);
+  carregarUsuarios();
 }
-function editarVinculoUsuario(uid,atual){
+async function editarVinculoUsuario(uid,atual){
   if(!currentUser?.gerenciarUsuarios)return;
   const opcoes=funcionarios.filter(f=>f.ativo!==false).map(f=>`${f.id} = ${f.nome}`).join('\n');
   const novo=prompt('Funcionário vinculado. Informe o ID do funcionário ou deixe em branco para remover o vínculo:\n\n'+opcoes,atual||'');
   if(novo===null)return;
   const fid=novo.trim();
   if(fid&&!funcionarios.some(f=>f.id===fid))return alert('ID de funcionário inválido.');
-  db.collection('usuarios').doc(uid).update({funcionarioId:fid||null}).then(()=>{carregarUsuarios();alert(fid?'Vínculo atualizado. O usuário deve sair e entrar novamente para carregar as abas pessoais.':'Vínculo removido.');});
+  const ref=db.collection('usuarios').doc(uid), snap=await ref.get(), antes=snap.exists?snap.data():{};
+  await ref.update({funcionarioId:fid||null});
+  await registrarAuditoriaEvento('vinculo_alterado','usuarios',uid,{...antes,funcionarioId:fid||null},antes,`Vínculo de colaborador alterado: ${atual||'sem vínculo'} → ${fid||'sem vínculo'}.`);
+  carregarUsuarios();alert(fid?'Vínculo atualizado. O usuário deve sair e entrar novamente para carregar as abas pessoais.':'Vínculo removido.');
 }
-function toggleUsuario(uid,ativar){
-  db.collection('usuarios').doc(uid).update({ativo:ativar}).then(carregarUsuarios);
+async function toggleUsuario(uid,ativar){
+  if(!currentUser?.gerenciarUsuarios)return;
+  const ref=db.collection('usuarios').doc(uid), snap=await ref.get(), antes=snap.exists?snap.data():{};
+  await ref.update({ativo:ativar});
+  await registrarAuditoriaEvento(ativar?'usuario_reativado':'usuario_desativado','usuarios',uid,{...antes,ativo:ativar},antes,`Usuário ${ativar?'reativado':'desativado'}: ${antes.nome||uid}.`);
+  carregarUsuarios();
 }
 
 
 // ---------- Pagamentos de colaboradores ----------
 function rateioLancamentoParaFuncionario(l,fid){if(!l||!(l.colabs||[]).includes(fid)||l.cancelado)return 0;const n=Math.max(1,(l.colabs||[]).length);const a=Object.values(l.alim||{}).reduce((x,y)=>x+num(y),0)/n;const g=Object.values(l.log||{}).reduce((x,y)=>x+num(y),0)/n;return a+g+num((l.diaria||{})[fid]);}
 function totalDevidoFuncionario(fid){return vivos(lancamentos).reduce((s,l)=>s+rateioLancamentoParaFuncionario(l,fid),0)}
-function totalPagoFuncionario(fid){return pagamentosColaborador.filter(p=>p.funcionarioId===fid&&!p.cancelado).reduce((s,p)=>s+num(p.valor),0)}
-function saldoFuncionario(fid){return Math.max(0,totalDevidoFuncionario(fid)-totalPagoFuncionario(fid))}
-function statusPagamento(p){if(p.cancelado)return 'CANCELADO';if(p.assinadoEm)return 'ASSINADO';return 'AGUARDANDO ASSINATURA'}
-function viewPagamentos(){
-  const ativos=funcionarios.filter(f=>f.ativo!==false), lista=pagamentosColaborador.slice().sort((a,b)=>(b.data||'').localeCompare(a.data||''));
-  return `<div class="card"><h2>Pagamentos aos colaboradores</h2><p class="hint">Registre pagamentos em qualquer data. O pagamento reduz o saldo do colaborador, preserva o histórico e gera recibo eletrônico após a assinatura.</p>
-   <div class="row"><div><label>Data do pagamento</label><input id="pgData" type="date" value="${hoje()}"></div><div><label>Colaborador</label><select id="pgFunc" onchange="atualizarResumoPagamento()">${ativos.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div></div>
-   <div id="pgResumo"></div>
-   <div class="row"><div><label>Valor pago</label><input id="pgValor" type="number" step="0.01"></div><div><label>Referência / observação</label><input id="pgRef" placeholder="Ex.: acerto parcial, semana 40, saldo de setembro"></div></div>
-   <label>Link do comprovante PIX no OneDrive (opcional)</label><input id="pgComprovante" placeholder="Cole aqui o link compartilhado do comprovante, quando disponível"><p class="hint">O histórico financeiro fica no Firestore. A automação de arquivamento/expiração do arquivo no OneDrive depende de integração externa e permanece preparada para etapa posterior.</p>
-   <button class="btn" onclick="salvarPagamentoColaborador()">Registrar pagamento</button><p class="hint" id="msgPg"></p></div>
-   <div class="card"><h2>Histórico de pagamentos</h2><table><thead><tr><th>Data</th><th>Colaborador</th><th>Valor</th><th>Referência</th><th>Status</th><th></th></tr></thead><tbody>${lista.map(p=>`<tr style="${p.cancelado?'opacity:.55':''}"><td>${dataBR(p.data)}</td><td>${nomeF(p.funcionarioId)}</td><td>${brl(p.valor)}</td><td>${p.referencia||'-'}</td><td><span class="tag ${p.assinadoEm?'ok':p.cancelado?'danger':'warn'}">${statusPagamento(p)}</span></td><td>${p.cancelado?'':`<button class="btn ghost" style="margin:0 2px;padding:3px 8px" onclick="gerarReciboPagamento('${p.id}')">recibo</button><button class="btn ghost" style="margin:0;padding:3px 8px" onclick="cancelarPagamento('${p.id}')">cancelar</button>`}</td></tr>`).join('')||'<tr><td colspan="6">Nenhum pagamento registrado.</td></tr>'}</tbody></table></div>`;
+function destinoPagamento(p){return p?.destinoValor||'colaborador'}
+function tipoReciboPagamento(p){return p?.tipoRecibo||(destinoPagamento(p)==='colaborador'?'eletronico':'nao_aplicavel')}
+function totalLiquidadoFuncionario(fid){return pagamentosColaborador.filter(p=>p.funcionarioId===fid&&!p.cancelado).reduce((s,p)=>s+num(p.valor),0)}
+function totalPagoDiretoFuncionario(fid){return pagamentosColaborador.filter(p=>p.funcionarioId===fid&&!p.cancelado&&destinoPagamento(p)==='colaborador').reduce((s,p)=>s+num(p.valor),0)}
+function totalCusteadoEmpresaFuncionario(fid){return pagamentosColaborador.filter(p=>p.funcionarioId===fid&&!p.cancelado&&destinoPagamento(p)!=='colaborador').reduce((s,p)=>s+num(p.valor),0)}
+function saldoFuncionario(fid){return Math.max(0,totalDevidoFuncionario(fid)-totalLiquidadoFuncionario(fid))}
+function labelDestinoPagamento(p){
+  return ({colaborador:'Pago ao colaborador',empresa_direto:'Pago diretamente pela Safety',rateio_empresa:'Rateio/custeio pela Safety'})[destinoPagamento(p)]||'Pago ao colaborador';
 }
-function atualizarResumoPagamento(){const el=document.getElementById('pgResumo'),fid=document.getElementById('pgFunc')?.value;if(!el||!fid)return;el.innerHTML=`<div class="payment-summary"><div><span>Total acumulado</span><strong>${brl(totalDevidoFuncionario(fid))}</strong></div><div><span>Já pago</span><strong>${brl(totalPagoFuncionario(fid))}</strong></div><div><span>Saldo atual</span><strong>${brl(saldoFuncionario(fid))}</strong></div></div>`;}
-function salvarPagamentoColaborador(){const fid=pgFunc.value,v=num(pgValor.value),saldo=saldoFuncionario(fid);if(!fid||v<=0)return msgPg.textContent='Informe colaborador e valor.';if(v>saldo+0.009)return msgPg.textContent='O pagamento não pode ultrapassar o saldo atual de '+brl(saldo)+'.';const p={data:pgData.value||hoje(),funcionarioId:fid,valor:v,referencia:pgRef.value.trim(),comprovanteUrl:pgComprovante.value.trim(),status:'aguardando_assinatura',assinadoEm:'',assinatura:''};pagamentosColaborador.push(p);persistir('pagamentos_colaborador',p).then(()=>{render();setTimeout(atualizarResumoPagamento,0)});}
+function statusPagamento(p){
+  if(p.cancelado)return 'CANCELADO';
+  if(destinoPagamento(p)!=='colaborador')return 'CUSTEADO PELA SAFETY';
+  if(tipoReciboPagamento(p)==='tradicional')return 'RECIBO TRADICIONAL';
+  if(p.assinadoEm)return 'ASSINADO NO APP';
+  return 'AGUARDANDO ASSINATURA';
+}
+function classeStatusPagamento(p){
+  if(p.cancelado)return 'danger';
+  if(destinoPagamento(p)!=='colaborador'||tipoReciboPagamento(p)==='tradicional'||p.assinadoEm)return 'ok';
+  return 'warn';
+}
+function opcoesMeioPagamento(){
+  return ['PIX','Transferência bancária','Dinheiro','Cartão corporativo','Boleto/Fornecedor','Outro'].map(x=>`<option value="${x}">${x}</option>`).join('');
+}
+function atualizarCamposPagamento(){
+  const dest=document.getElementById('pgDestino')?.value||'colaborador';
+  const recWrap=document.getElementById('pgReciboWrap'), extWrap=document.getElementById('pgReciboExternoWrap'), rec=document.getElementById('pgTipoRecibo');
+  if(recWrap)recWrap.style.display=dest==='colaborador'?'block':'none';
+  if(dest!=='colaborador'&&rec)rec.value='nao_aplicavel';
+  if(dest==='colaborador'&&rec?.value==='nao_aplicavel')rec.value='eletronico';
+  if(extWrap)extWrap.style.display=(dest==='colaborador'&&rec?.value==='tradicional')?'block':'none';
+}
+function viewPagamentos(){
+  const ativos=funcionarios.filter(f=>f.ativo!==false).slice().sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));
+  const lista=pagamentosColaborador.slice().sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  return `<div class="card"><h2>Pagamentos e custeios dos colaboradores</h2>
+   <p class="hint">Registre tanto valores efetivamente entregues ao colaborador quanto despesas pagas diretamente pela Safety. Todos os registros liquidam a parcela correspondente do rateio, mas o sistema identifica claramente o que entrou na conta do trabalhador e o que foi custeado pela empresa.</p>
+   <div class="row"><div><label>Data</label><input id="pgData" type="date" value="${hoje()}"></div><div><label>Colaborador</label><select id="pgFunc" onchange="atualizarResumoPagamento()">${ativos.map(f=>`<option value="${f.id}">${f.nome}</option>`).join('')}</select></div></div>
+   <div id="pgResumo"></div>
+   <div class="row"><div><label>Valor</label><input id="pgValor" type="number" step="0.01"></div>
+   <div><label>Destino do valor</label><select id="pgDestino" onchange="atualizarCamposPagamento()"><option value="colaborador">Pago ao colaborador</option><option value="empresa_direto">Pago diretamente pela Safety</option><option value="rateio_empresa">Rateio/custeio pela Safety</option></select></div></div>
+   <div class="row"><div><label>Meio de pagamento/custeio</label><select id="pgMeio">${opcoesMeioPagamento()}</select></div>
+   <div id="pgReciboWrap"><label>Forma do recibo</label><select id="pgTipoRecibo" onchange="atualizarCamposPagamento()"><option value="eletronico">Assinatura eletrônica pelo aplicativo</option><option value="tradicional">Recibo tradicional/externo</option></select></div></div>
+   <label>Referência / observação</label><input id="pgRef" placeholder="Ex.: diárias semana 40; almoço rateado; acerto parcial">
+   <label>Link do comprovante financeiro no OneDrive (opcional)</label><input id="pgComprovante" placeholder="PIX, transferência, cartão corporativo ou outro comprovante">
+   <div id="pgReciboExternoWrap" style="display:none"><label>Link do recibo tradicional/externo no OneDrive (opcional)</label><input id="pgReciboExterno" placeholder="Cole o link do recibo já assinado, se desejar arquivá-lo"></div>
+   <p class="hint">Recibo eletrônico e recibo tradicional podem coexistir. Para valores pagos diretamente pela Safety, o colaborador não recebe uma solicitação de assinatura porque o valor não foi transferido a ele.</p>
+   <button class="btn" onclick="salvarPagamentoColaborador()">Registrar pagamento/custeio</button><p class="hint" id="msgPg"></p></div>
+   <div class="card"><h2>Histórico de pagamentos e custeios</h2><table><thead><tr><th>Data</th><th>Colaborador</th><th>Valor</th><th>Destino</th><th>Meio</th><th>Referência</th><th>Status</th><th></th></tr></thead><tbody>${lista.map(p=>`<tr style="${p.cancelado?'opacity:.55':''}"><td>${dataBR(p.data)}</td><td>${nomeF(p.funcionarioId)}</td><td>${brl(p.valor)}</td><td>${labelDestinoPagamento(p)}</td><td>${p.meioPagamento||'—'}</td><td>${p.referencia||'-'}</td><td><span class="tag ${classeStatusPagamento(p)}">${statusPagamento(p)}</span></td><td>${acoesPagamentoGestao(p)}</td></tr>`).join('')||'<tr><td colspan="8">Nenhum pagamento registrado.</td></tr>'}</tbody></table></div>`;
+}
+function atualizarResumoPagamento(){
+  const el=document.getElementById('pgResumo'),fid=document.getElementById('pgFunc')?.value;if(!el||!fid)return;
+  el.innerHTML=`<div class="payment-summary">
+   <div><span>Total acumulado</span><strong>${brl(totalDevidoFuncionario(fid))}</strong></div>
+   <div><span>Pago ao colaborador</span><strong>${brl(totalPagoDiretoFuncionario(fid))}</strong></div>
+   <div><span>Custeado pela Safety</span><strong>${brl(totalCusteadoEmpresaFuncionario(fid))}</strong></div>
+   <div><span>Total liquidado</span><strong>${brl(totalLiquidadoFuncionario(fid))}</strong></div>
+   <div><span>Saldo atual</span><strong>${brl(saldoFuncionario(fid))}</strong></div>
+  </div>`;
+}
+function salvarPagamentoColaborador(){
+  const fid=pgFunc.value,v=num(pgValor.value),saldo=saldoFuncionario(fid),destino=pgDestino.value||'colaborador';
+  if(!fid||v<=0)return msgPg.textContent='Informe colaborador e valor.';
+  if(v>saldo+0.009)return msgPg.textContent='O pagamento/custeio não pode ultrapassar o saldo atual de '+brl(saldo)+'.';
+  const tipoRecibo=destino==='colaborador'?(pgTipoRecibo.value||'eletronico'):'nao_aplicavel';
+  const status=destino!=='colaborador'?'custeado_empresa':tipoRecibo==='tradicional'?'quitado_tradicional':'aguardando_assinatura';
+  const p={data:pgData.value||hoje(),funcionarioId:fid,valor:v,destinoValor:destino,meioPagamento:pgMeio.value||'',tipoRecibo,
+    referencia:pgRef.value.trim(),comprovanteUrl:pgComprovante.value.trim(),reciboExternoUrl:(tipoRecibo==='tradicional'?pgReciboExterno.value.trim():''),
+    status,assinadoEm:'',assinatura:''};
+  pagamentosColaborador.push(p);
+  persistir('pagamentos_colaborador',p,destino==='colaborador'?'pagamento_registrado':'custeio_registrado').then(()=>{render();setTimeout(()=>{atualizarResumoPagamento();atualizarCamposPagamento()},0)});
+}
+function acoesPagamentoGestao(p){
+  if(p.cancelado)return '';
+  let a='';
+  if(destinoPagamento(p)==='colaborador'&&tipoReciboPagamento(p)==='eletronico'&&p.assinadoEm)a+=`<button class="btn ghost" style="margin:0 2px;padding:3px 8px" onclick="gerarReciboPagamento('${p.id}')">recibo app</button>`;
+  if(tipoReciboPagamento(p)==='tradicional'&&p.reciboExternoUrl)a+=`<a class="btn ghost" style="display:inline-flex;align-items:center;margin:0 2px;padding:3px 8px;min-height:32px;text-decoration:none" href="${p.reciboExternoUrl}" target="_blank" rel="noopener">recibo externo</a>`;
+  a+=`<button class="btn ghost" style="margin:0;padding:3px 8px" onclick="cancelarPagamento('${p.id}')">cancelar</button>`;
+  return a;
+}
 function cancelarPagamento(id){const p=pagamentosColaborador.find(x=>x.id===id);if(!p||p.cancelado)return;const motivo=(prompt('Motivo do cancelamento:')||'').trim();if(!motivo)return;const antes=JSON.parse(JSON.stringify(p));p.cancelado=true;p.motivoCancelamento=motivo;persistir('pagamentos_colaborador',p,'cancelado',antes);render();}
-function viewMeusPagamentos(){const fid=currentUser?.funcionarioId;if(!fid)return '<div class="card"><h2>Meus Pagamentos</h2><p>Seu login ainda não está vinculado ao cadastro de colaborador.</p></div>';const lista=pagamentosColaborador.filter(p=>p.funcionarioId===fid&&!p.cancelado).sort((a,b)=>(b.data||'').localeCompare(a.data||''));return `<div class="card"><h2>Meus Pagamentos</h2><p class="hint">Consulte pagamentos registrados, assine o recibo eletrônico e acesse o comprovante quando disponibilizado pela empresa.</p><table><thead><tr><th>Data</th><th>Valor</th><th>Referência</th><th>Status</th><th></th></tr></thead><tbody>${lista.map(p=>`<tr><td>${dataBR(p.data)}</td><td>${brl(p.valor)}</td><td>${p.referencia||'-'}</td><td><span class="tag ${p.assinadoEm?'ok':'warn'}">${statusPagamento(p)}</span></td><td>${p.assinadoEm?`<button class="btn ghost" style="margin:0 2px;padding:3px 8px" onclick="gerarReciboPagamento('${p.id}')">recibo</button>`:`<button class="btn" style="margin:0 2px;padding:3px 8px;min-height:32px" onclick="abrirAssinaturaPagamento('${p.id}')">assinar recibo</button>`}${p.comprovanteUrl?` <a class="btn ghost" style="display:inline-flex;align-items:center;margin:0;padding:3px 8px;min-height:32px;text-decoration:none" href="${p.comprovanteUrl}" target="_blank" rel="noopener">comprovante PIX</a>`:''}</td></tr>`).join('')||'<tr><td colspan="5">Nenhum pagamento registrado.</td></tr>'}</tbody></table></div>`;}
+function acoesMeuPagamento(p){
+  let a='';
+  if(destinoPagamento(p)==='colaborador'&&tipoReciboPagamento(p)==='eletronico'){
+    if(p.assinadoEm)a+=`<button class="btn ghost" style="margin:0 2px;padding:3px 8px" onclick="gerarReciboPagamento('${p.id}')">recibo</button>`;
+    else a+=`<button class="btn" style="margin:0 2px;padding:3px 8px;min-height:32px" onclick="abrirAssinaturaPagamento('${p.id}')">assinar recibo</button>`;
+  }
+  if(tipoReciboPagamento(p)==='tradicional'&&p.reciboExternoUrl)a+=` <a class="btn ghost" style="display:inline-flex;align-items:center;margin:0 2px;padding:3px 8px;min-height:32px;text-decoration:none" href="${p.reciboExternoUrl}" target="_blank" rel="noopener">recibo externo</a>`;
+  if(p.comprovanteUrl)a+=` <a class="btn ghost" style="display:inline-flex;align-items:center;margin:0;padding:3px 8px;min-height:32px;text-decoration:none" href="${p.comprovanteUrl}" target="_blank" rel="noopener">comprovante</a>`;
+  return a||'<span class="hint">Sem ação pendente</span>';
+}
+function viewMeusPagamentos(){
+  const fid=currentUser?.funcionarioId;if(!fid)return '<div class="card"><h2>Meus Pagamentos</h2><p>Seu login ainda não está vinculado ao cadastro de colaborador.</p></div>';
+  const lista=pagamentosColaborador.filter(p=>p.funcionarioId===fid&&!p.cancelado).sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  return `<div class="card"><h2>Meus Pagamentos</h2><p class="hint">Consulte valores pagos a você e valores do seu rateio que foram custeados diretamente pela Safety. Somente pagamentos com recibo eletrônico ficam pendentes de assinatura no aplicativo.</p>
+   <table><thead><tr><th>Data</th><th>Valor</th><th>Destino</th><th>Meio</th><th>Referência</th><th>Status</th><th></th></tr></thead><tbody>${lista.map(p=>`<tr><td>${dataBR(p.data)}</td><td>${brl(p.valor)}</td><td>${labelDestinoPagamento(p)}</td><td>${p.meioPagamento||'—'}</td><td>${p.referencia||'-'}</td><td><span class="tag ${classeStatusPagamento(p)}">${statusPagamento(p)}</span></td><td>${acoesMeuPagamento(p)}</td></tr>`).join('')||'<tr><td colspan="7">Nenhum pagamento registrado.</td></tr>'}</tbody></table></div>`;
+}
 let assinaturaPagamentoId=null,assinandoCanvas=null,assinandoCtx=null,assinando=false,assinaturaTemTraco=false;
-function abrirAssinaturaPagamento(id){const p=pagamentosColaborador.find(x=>x.id===id);if(!p||p.funcionarioId!==currentUser?.funcionarioId)return;assinaturaPagamentoId=id;const host=document.getElementById('signatureHost');host.innerHTML=`<div class="modal-sign"><div class="modal-sign-card"><div class="modal-sign-head"><h3>Assinar recibo de pagamento</h3><p class="hint">${dataBR(p.data)} · ${brl(p.valor)} · ${p.referencia||'Pagamento'}</p></div><div class="modal-sign-body"><p class="hint">Assine no quadro abaixo para confirmar o recebimento do valor registrado.</p><canvas id="assinaturaPagamentoCanvas" class="signature-canvas" width="900" height="300"></canvas></div><div class="modal-sign-foot"><button class="btn ghost" onclick="limparAssinaturaPagamento()">Limpar</button><button class="btn ghost" onclick="fecharAssinaturaPagamento()">Cancelar</button><button class="btn" onclick="confirmarAssinaturaPagamento()">Confirmar assinatura</button></div></div></div>`;assinandoCanvas=document.getElementById('assinaturaPagamentoCanvas');assinandoCtx=assinandoCanvas.getContext('2d');assinandoCtx.lineWidth=3;assinandoCtx.lineCap='round';assinandoCtx.strokeStyle='#073B73';assinaturaTemTraco=false;const pos=e=>{const r=assinandoCanvas.getBoundingClientRect(),t=e.touches?.[0]||e;return {x:(t.clientX-r.left)*assinandoCanvas.width/r.width,y:(t.clientY-r.top)*assinandoCanvas.height/r.height}};const ini=e=>{e.preventDefault();assinando=true;const p=pos(e);assinandoCtx.beginPath();assinandoCtx.moveTo(p.x,p.y)};const mov=e=>{if(!assinando)return;e.preventDefault();const p=pos(e);assinandoCtx.lineTo(p.x,p.y);assinandoCtx.stroke();assinaturaTemTraco=true};const fim=()=>assinando=false;['mousedown','touchstart'].forEach(ev=>assinandoCanvas.addEventListener(ev,ini,{passive:false}));['mousemove','touchmove'].forEach(ev=>assinandoCanvas.addEventListener(ev,mov,{passive:false}));['mouseup','mouseleave','touchend'].forEach(ev=>assinandoCanvas.addEventListener(ev,fim));}
+function abrirAssinaturaPagamento(id){
+ const p=pagamentosColaborador.find(x=>x.id===id);
+ if(!p||p.funcionarioId!==currentUser?.funcionarioId||destinoPagamento(p)!=='colaborador'||tipoReciboPagamento(p)!=='eletronico'||p.assinadoEm)return;
+ assinaturaPagamentoId=id;
+ const host=document.getElementById('signatureHost');
+ host.innerHTML=`<div class="modal-sign"><div class="modal-sign-card"><div class="modal-sign-head"><h3>Assinar recibo de pagamento</h3><p class="hint">${dataBR(p.data)} · ${brl(p.valor)} · ${p.referencia||'Pagamento'}</p></div><div class="modal-sign-body"><p class="hint">Assine no quadro abaixo para confirmar o recebimento do valor registrado.</p><canvas id="assinaturaPagamentoCanvas" class="signature-canvas" width="900" height="300"></canvas></div><div class="modal-sign-foot"><button class="btn ghost" onclick="limparAssinaturaPagamento()">Limpar</button><button class="btn ghost" onclick="fecharAssinaturaPagamento()">Cancelar</button><button class="btn" onclick="confirmarAssinaturaPagamento()">Confirmar assinatura</button></div></div></div>`;
+ assinandoCanvas=document.getElementById('assinaturaPagamentoCanvas');assinandoCtx=assinandoCanvas.getContext('2d');assinandoCtx.lineWidth=3;assinandoCtx.lineCap='round';assinandoCtx.strokeStyle='#073B73';assinaturaTemTraco=false;
+ const pos=e=>{const r=assinandoCanvas.getBoundingClientRect(),t=e.touches?.[0]||e;return {x:(t.clientX-r.left)*assinandoCanvas.width/r.width,y:(t.clientY-r.top)*assinandoCanvas.height/r.height}};
+ const ini=e=>{e.preventDefault();assinando=true;const p=pos(e);assinandoCtx.beginPath();assinandoCtx.moveTo(p.x,p.y)};
+ const mov=e=>{if(!assinando)return;e.preventDefault();const p=pos(e);assinandoCtx.lineTo(p.x,p.y);assinandoCtx.stroke();assinaturaTemTraco=true};
+ const fim=()=>assinando=false;
+ ['mousedown','touchstart'].forEach(ev=>assinandoCanvas.addEventListener(ev,ini,{passive:false}));
+ ['mousemove','touchmove'].forEach(ev=>assinandoCanvas.addEventListener(ev,mov,{passive:false}));
+ ['mouseup','mouseleave','touchend'].forEach(ev=>assinandoCanvas.addEventListener(ev,fim));
+}
 function limparAssinaturaPagamento(){if(assinandoCtx&&assinandoCanvas){assinandoCtx.clearRect(0,0,assinandoCanvas.width,assinandoCanvas.height);assinaturaTemTraco=false}}
 function fecharAssinaturaPagamento(){document.getElementById('signatureHost').innerHTML='';assinaturaPagamentoId=null}
-async function confirmarAssinaturaPagamento(){if(!assinaturaTemTraco)return alert('Faça a assinatura antes de confirmar.');const p=pagamentosColaborador.find(x=>x.id===assinaturaPagamentoId);if(!p)return;const assinatura=assinandoCanvas.toDataURL('image/png');const assinadoEm=new Date().toISOString();try{await db.collection('pagamentos_colaborador').doc(p.id).update({assinatura,assinadoEm,status:'assinado',alteradoEm:assinadoEm});Object.assign(p,{assinatura,assinadoEm,status:'assinado'});await db.collection('auditoria').add({colecao:'pagamentos_colaborador',itemId:p.id,acao:'recibo_assinado',uid:currentUser.uid,nome:currentUser.nome,em:assinadoEm});fecharAssinaturaPagamento();render();}catch(e){alert('Não foi possível salvar a assinatura: '+e.message)}}
-function gerarReciboPagamento(id){const p=pagamentosColaborador.find(x=>x.id===id),f=funcionarios.find(x=>x.id===p?.funcionarioId);if(!p)return alert('Pagamento não encontrado.');if(!p.assinadoEm)return alert('O recibo ainda não foi assinado pelo colaborador.');const corpo=`<div style="margin:4mm 0 3mm;font-size:9.5pt">Colaborador: <b>${f?.nome||p.funcionarioId}</b> · CPF ${f?.cpf||'-'} · Função: ${f?.funcao||'-'}</div><table class="tb"><thead><tr><th>Data</th><th>Referência</th><th class="r">Valor pago</th></tr></thead><tbody><tr><td>${dataBR(p.data)}</td><td>${p.referencia||'Pagamento'}</td><td class="r"><b>${brl(p.valor)}</b></td></tr></tbody></table><p style="font-size:9.5pt;margin-top:6mm">Declaro o recebimento do valor acima, registrado pela Safety Equipamentos.</p>${p.assinatura?`<div style="margin-top:8mm;text-align:center"><img src="${p.assinatura}" style="max-width:70mm;max-height:24mm"><div style="border-top:1px solid #333;width:80mm;margin:1mm auto"><b>${f?.nome||''}</b><br><span style="font-size:8pt">Assinado eletronicamente em ${new Date(p.assinadoEm).toLocaleString('pt-BR')}</span></div></div>`:''}`;imprimirDoc('RECIBO DE PAGAMENTO','Pagamento individual',`${f?.id||p.funcionarioId} · ${p.data}`,corpo,'SE-MOD-ADM-098',`Recibo_Pagamento_${(f?.nome||p.funcionarioId).replace(/\\s+/g,'_')}_${p.data}`);}
+async function confirmarAssinaturaPagamento(){
+ if(!assinaturaTemTraco)return alert('Faça a assinatura antes de confirmar.');
+ const p=pagamentosColaborador.find(x=>x.id===assinaturaPagamentoId);if(!p)return;
+ const assinatura=assinandoCanvas.toDataURL('image/png'),assinadoEm=new Date().toISOString();
+ try{
+  await db.collection('pagamentos_colaborador').doc(p.id).update({assinatura,assinadoEm,status:'assinado',alteradoEm:assinadoEm});
+  Object.assign(p,{assinatura,assinadoEm,status:'assinado'});
+  await registrarAuditoriaEvento('recibo_assinado','pagamentos_colaborador',p.id,{...p,assinatura:'[assinatura omitida]'},null,`Recibo eletrônico assinado pelo colaborador · ${p.referencia||p.id} · ${brl(p.valor)}.`);
+  fecharAssinaturaPagamento();render();
+ }catch(e){alert('Não foi possível salvar a assinatura: '+e.message)}
+}
+function gerarReciboPagamento(id){
+ const p=pagamentosColaborador.find(x=>x.id===id),f=funcionarios.find(x=>x.id===p?.funcionarioId);
+ if(!p)return alert('Pagamento não encontrado.');
+ if(destinoPagamento(p)!=='colaborador')return alert('Este valor foi custeado diretamente pela Safety e não gera recibo de recebimento do colaborador.');
+ if(tipoReciboPagamento(p)==='tradicional')return alert('Este pagamento foi registrado com recibo tradicional/externo.');
+ if(!p.assinadoEm)return alert('O recibo ainda não foi assinado pelo colaborador.');
+ const corpo=`<div style="margin:4mm 0 3mm;font-size:9.5pt">Colaborador: <b>${f?.nome||p.funcionarioId}</b> · CPF ${f?.cpf||'-'} · Função: ${f?.funcao||'-'}</div><table class="tb"><thead><tr><th>Data</th><th>Referência</th><th>Meio</th><th class="r">Valor recebido</th></tr></thead><tbody><tr><td>${dataBR(p.data)}</td><td>${p.referencia||'Pagamento'}</td><td>${p.meioPagamento||'—'}</td><td class="r"><b>${brl(p.valor)}</b></td></tr></tbody></table><p style="font-size:9.5pt;margin-top:6mm">Declaro o recebimento do valor acima, registrado pela Safety Equipamentos.</p>${p.assinatura?`<div style="margin-top:8mm;text-align:center"><img src="${p.assinatura}" style="max-width:70mm;max-height:24mm"><div style="border-top:1px solid #333;width:80mm;margin:1mm auto"><b>${f?.nome||''}</b><br><span style="font-size:8pt">Assinado eletronicamente em ${new Date(p.assinadoEm).toLocaleString('pt-BR')}</span></div></div>`:''}`;
+ imprimirDoc('RECIBO DE PAGAMENTO','Pagamento individual',`${f?.id||p.funcionarioId} · ${p.data}`,corpo,'SE-MOD-ADM-098',`Recibo_Pagamento_${(f?.nome||p.funcionarioId).replace(/\s+/g,'_')}_${p.data}`);
+}
 
 // ---------- Recibos ----------
 function viewRecibos(){
@@ -915,6 +1165,45 @@ function gerarAuditoria(){
      <tr class="tot"><td colspan="4">TOTAL</td><td class="r">${brl(gt)}</td><td class="r">${brl(gp)}</td><td class="r">${brl(gt-gp)}</td></tr></tbody></table>`;
   }
   imprimirDoc('RELATÓRIO DE AUDITORIA',`${periodoLabel(mes)} · Todas as obras`,ref,corpo,'SE-MOD-ADM-099',arq);
+}
+
+
+// ---------- Auditoria exclusiva ----------
+function labelAcaoAuditoria(a){
+ return ({criado:'Criado',alterado:'Alterado',corrigido:'Corrigido',cancelado:'Cancelado',restaurado:'Restaurado',encerrado:'Encerrado',reaberto:'Reaberto',login:'Login',logout:'Logout',recibo_assinado:'Recibo assinado',pagamento_registrado:'Pagamento registrado',custeio_registrado:'Custeio registrado',usuario_criado:'Usuário criado',usuario_alterado:'Usuário alterado',usuario_desativado:'Usuário desativado',usuario_reativado:'Usuário reativado',papel_alterado:'Papel alterado',vinculo_alterado:'Vínculo alterado'})[a]||String(a||'Evento').replaceAll('_',' ');
+}
+async function carregarAuditoria(){
+ if(!currentUser?.gerenciarUsuarios)return;
+ try{
+  const snap=await db.collection('auditoria').orderBy('em','desc').limit(1000).get();
+  auditoriaRegistros=snap.docs.map(d=>({...d.data(),id:d.id}));
+ }catch(e){console.warn('Não foi possível carregar auditoria:',e.message);auditoriaRegistros=[]}
+}
+function viewAuditoria(){
+ if(!currentUser?.gerenciarUsuarios)return '<div class="card"><h2>Acesso restrito</h2></div>';
+ const mods=[...new Set(auditoriaRegistros.map(a=>a.modulo||nomeModuloAuditoria(a.colecao)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+ const users=[...new Set(auditoriaRegistros.map(a=>a.nome).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+ const acoes=[...new Set(auditoriaRegistros.map(a=>a.acao).filter(Boolean))].sort();
+ return `<div class="card"><h2>Auditoria</h2><p class="hint">Histórico técnico das ações do Sistema Interno. Esta página é exclusiva da mesma conta autorizada a administrar usuários. Os registros são somente leitura e não podem ser editados pela interface.</p>
+  <div class="audit-toolbar">
+   <div><label>Pesquisar</label><input id="audBusca" placeholder="Usuário, registro, resumo..." oninput="renderListaAuditoria()"></div>
+   <div><label>Usuário</label><select id="audUsuario" onchange="renderListaAuditoria()"><option value="">Todos</option>${users.map(x=>`<option>${x}</option>`).join('')}</select></div>
+   <div><label>Módulo</label><select id="audModulo" onchange="renderListaAuditoria()"><option value="">Todos</option>${mods.map(x=>`<option>${x}</option>`).join('')}</select></div>
+   <div><label>Ação</label><select id="audAcao" onchange="renderListaAuditoria()"><option value="">Todas</option>${acoes.map(x=>`<option value="${x}">${labelAcaoAuditoria(x)}</option>`).join('')}</select></div>
+   <div><button class="btn ghost" onclick="carregarAuditoria().then(render)">Atualizar auditoria</button></div>
+  </div>
+  <div class="row"><div><label>De</label><input type="date" id="audIni" onchange="renderListaAuditoria()"></div><div><label>Até</label><input type="date" id="audFim" onchange="renderListaAuditoria()"></div></div>
+  <p class="hint" id="audContador"></p><div id="audLista"></div></div>`;
+}
+function renderListaAuditoria(){
+ const host=document.getElementById('audLista');if(!host)return;
+ const q=(document.getElementById('audBusca')?.value||'').trim().toLowerCase(),us=document.getElementById('audUsuario')?.value||'',mo=document.getElementById('audModulo')?.value||'',ac=document.getElementById('audAcao')?.value||'',ini=document.getElementById('audIni')?.value||'',fim=document.getElementById('audFim')?.value||'';
+ const lista=auditoriaRegistros.filter(a=>{
+  const dia=String(a.em||'').slice(0,10),mod=a.modulo||nomeModuloAuditoria(a.colecao),texto=[a.nome,a.perfil,mod,a.acao,a.itemId,a.resumo].join(' ').toLowerCase();
+  return (!q||texto.includes(q))&&(!us||a.nome===us)&&(!mo||mod===mo)&&(!ac||a.acao===ac)&&(!ini||dia>=ini)&&(!fim||dia<=fim);
+ });
+ const cont=document.getElementById('audContador');if(cont)cont.textContent=`${lista.length} registro(s) exibido(s). A página carrega os 1.000 eventos mais recentes.`;
+ host.innerHTML=`<div class="table-wrap"><table><thead><tr><th>Data/hora</th><th>Usuário</th><th>Perfil</th><th>Módulo</th><th>Ação</th><th>Registro</th><th>Resumo</th></tr></thead><tbody>${lista.map(a=>`<tr><td>${a.em?new Date(a.em).toLocaleString('pt-BR'):'—'}</td><td>${a.nome||'—'}</td><td>${a.perfil||'—'}</td><td>${a.modulo||nomeModuloAuditoria(a.colecao)}</td><td><span class="tag info">${labelAcaoAuditoria(a.acao)}</span></td><td>${a.itemId||'—'}</td><td class="audit-summary">${a.resumo||'—'}</td></tr>`).join('')||'<tr><td colspan="7">Nenhum registro encontrado para os filtros selecionados.</td></tr>'}</tbody></table></div>`;
 }
 
 // ---------- Dashboard ----------
