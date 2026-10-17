@@ -29,6 +29,27 @@ label{font-size:12px;color:#314154;display:block;margin-top:9px;font-weight:700}
 .printArea{display:none}@page{size:A4;margin:10mm 12mm 14mm 12mm;@bottom-right{content:"PÁG. " counter(page);font:bold 8pt Arial,sans-serif;color:#6b7280}}@media print{body>*:not(#printArea){display:none!important}#printArea{display:block!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}#printArea{font-family:Arial,Helvetica,sans-serif;color:#0b2a4a;font-size:10pt}#printArea table.pg{width:100%;border-collapse:collapse;height:258mm}#printArea table.pg>thead>tr>td,#printArea table.pg>tbody>tr>td,#printArea table.pg>tfoot>tr>td{padding:0;border:0}#printArea table.pg>thead,#printArea table.pg>tfoot{display:table-header-group}#printArea table.pg>tfoot{display:table-footer-group}.tb{width:100%;border-collapse:collapse;margin:3mm 0;font-size:8.5pt}.tb th{background:#eaf2fb;color:#073B73;text-align:left;padding:5px 6px;font-size:7.5pt;text-transform:uppercase}.tb td{padding:4px 6px;border-bottom:1px solid #d9e0ec}.tb .r{text-align:right}.tb tr.grp td{font-weight:bold;color:#073B73;background:#f7f9fd}.tb tr.sub td{background:#f7f9fd;font-size:8pt}.tb tr.tot td{font-weight:bold;background:#eef3fa;border-top:2px solid #073B73}.tb tr{page-break-inside:avoid}.doc{border:1px solid var(--line);padding:0;font-size:12px}.doc .top{background:var(--blue);color:#fff;padding:14px;position:relative}.doc .top .goldbar{position:absolute;bottom:0;left:0;right:0;height:5px;background:var(--gold)}.doc .body{padding:16px}.doc table{margin-top:10px}.sig{margin-top:50px;text-align:center}.sig .line{border-top:1px solid #333;width:220px;margin:0 auto 4px}
 @media(max-width:1180px){.kpis{grid-template-columns:repeat(2,1fr)}.audit-toolbar{grid-template-columns:repeat(2,1fr)}.rem-grid{grid-template-columns:repeat(2,minmax(140px,1fr))}}@media(max-width:900px){html{-webkit-text-size-adjust:100%}body{max-width:100%;overflow-x:hidden}.audit-toolbar{grid-template-columns:1fr}.login-shell{grid-template-columns:1fr;min-height:0}.login-brand-panel{display:none}.login-form-panel{padding:42px 28px;min-height:100vh}.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:translateX(0)}.app-main{margin-left:0;min-width:0}.menu-toggle{display:block}.sidebar-backdrop.open{display:block;position:fixed;inset:0;background:#10263d77;z-index:90}.topbar{padding:0 12px;height:76px}.user-meta{display:none}#main{padding:16px 10px 46px;min-width:0}.grid2{grid-template-columns:1fr}.payment-summary,.finance-summary{grid-template-columns:1fr 1fr}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row>div{min-width:0}.card{max-width:100%;overflow-x:hidden}.table-wrap,.card>.table-scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.card>table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}.mobile-note{display:block}.rem-grid{grid-template-columns:1fr 1fr}}@media(max-width:600px){#login{padding:0}.login-form-panel{padding:28px 18px}.kpis,.payment-summary,.finance-summary,.rem-grid{grid-template-columns:1fr}.topbar h1{font-size:17px}.topbar-kicker{font-size:8px}.year-select{max-width:88px;font-size:12px!important}.user-avatar{display:none}.logout-btn{padding:0 9px}.card{padding:15px 13px;border-radius:13px}.card h2{font-size:19px}.btn{min-height:42px}.modal-sign{padding:0}.modal-sign-card{width:100%;height:100%;border-radius:0}.signature-canvas{height:260px}.row{grid-template-columns:1fr}.row>div{min-width:0}input,select,textarea{font-size:16px;max-width:100%}table{font-size:11px;min-width:640px}.check-list-box{max-height:210px}.audit-mode .btn{flex:1}.mobile-note{font-size:10px;color:var(--muted)}}
 
+
+/* V3 RC3 — tabelas responsivas em formato de cartões no celular */
+@media(max-width:700px){
+  #main .card{overflow:visible}
+  #main .table-wrap,#main .table-scroll{max-width:100%;overflow:visible}
+  #main table.mobile-stack{display:block!important;width:100%!important;min-width:0!important;overflow:visible!important;margin-top:12px}
+  #main table.mobile-stack thead{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+  #main table.mobile-stack tbody{display:block;width:100%}
+  #main table.mobile-stack tr{display:block;width:100%;margin:0 0 10px;padding:4px 10px;border:1px solid var(--line);border-radius:11px;background:#fff;overflow:hidden}
+  #main table.mobile-stack td{display:grid!important;grid-template-columns:minmax(96px,38%) minmax(0,1fr);gap:10px;align-items:start;width:100%!important;min-width:0!important;padding:9px 0!important;border-bottom:1px solid #edf0f3!important;white-space:normal!important;overflow:visible!important;overflow-wrap:anywhere;word-break:break-word}
+  #main table.mobile-stack td::before{content:attr(data-label);display:block;color:#607184;font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:.035em;line-height:1.35}
+  #main table.mobile-stack td:last-child{border-bottom:0!important}
+  #main table.mobile-stack td[data-label=""]{display:flex!important;flex-wrap:wrap;gap:6px;align-items:center}
+  #main table.mobile-stack td[data-label=""]::before,#main table.mobile-stack td[colspan]::before{display:none}
+  #main table.mobile-stack td[colspan]{display:block!important}
+  #main table.mobile-stack .btn{margin:2px 4px 2px 0!important;min-height:38px;padding:0 11px!important;white-space:normal}
+  #main table.mobile-stack input[type="checkbox"]{width:20px!important;height:20px!important;min-height:20px!important;margin:0!important}
+  #main table.mobile-fit{display:table!important;width:100%!important;min-width:0!important;overflow:visible!important}
+  #main table.mobile-fit td,#main table.mobile-fit th{white-space:normal;overflow-wrap:anywhere}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></script>
@@ -249,7 +270,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-brand"><img id="headerLogo" alt="Safety Equipamentos"><div><strong>Safety Interno</strong><span>Gestão Operacional</span></div></div>
     <nav id="nav"></nav>
-    <div class="sidebar-footer">V3 RC2 SPARK — Interface Safety</div>
+    <div class="sidebar-footer">V3 RC3 SPARK — Interface Safety</div>
   </aside>
   <div id="sidebarBackdrop" class="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
   <div class="app-main">
@@ -367,6 +388,39 @@ function render(){
   if(active==='Lançamentos'){renderColabs();renderDiarias();renderListaLanc();}
   if(active==='Pagamentos')setTimeout(()=>{atualizarResumoPagamento();atualizarCamposPagamento()},0);
   if(active==='Auditoria')setTimeout(()=>{if(auditoriaModo==='obra')renderAuditoriaFinanceiraObra();else renderListaAuditoria()},0);
+}
+
+
+// ---------- responsividade de tabelas no celular (V3 RC3) ----------
+let responsiveTableFrame=0;
+function aplicarTabelasResponsivas(){
+  const root=document.getElementById('main');if(!root)return;
+  root.querySelectorAll('table').forEach(table=>{
+    if(table.closest('#printArea'))return;
+    const headers=[...table.querySelectorAll('thead tr:first-child th')].map(th=>(th.textContent||'').trim());
+    const rows=[...table.querySelectorAll('tbody tr')];
+    if(headers.length){
+      table.classList.add('mobile-stack');
+      table.classList.remove('mobile-fit');
+      rows.forEach(tr=>{
+        [...tr.children].forEach((cell,i)=>{
+          if(cell.tagName==='TD')cell.setAttribute('data-label',headers[i]||'');
+        });
+      });
+    }else{
+      const allRows=[...table.querySelectorAll('tr')];
+      const maxCols=allRows.reduce((m,tr)=>Math.max(m,tr.children.length),0);
+      if(maxCols<=3){table.classList.add('mobile-fit');table.classList.remove('mobile-stack')}
+    }
+  });
+}
+function agendarTabelasResponsivas(){
+  if(responsiveTableFrame)cancelAnimationFrame(responsiveTableFrame);
+  responsiveTableFrame=requestAnimationFrame(()=>{responsiveTableFrame=0;aplicarTabelasResponsivas()});
+}
+const responsiveTableRoot=document.getElementById('main');
+if(responsiveTableRoot){
+  new MutationObserver(agendarTabelasResponsivas).observe(responsiveTableRoot,{childList:true,subtree:true});
 }
 
 // ---------- Funcionários ----------
